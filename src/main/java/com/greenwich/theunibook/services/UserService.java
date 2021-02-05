@@ -2,6 +2,7 @@ package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.UserRepository;
+import com.greenwich.theunibook.web.requests.RegisterRequest;
 import com.greenwich.theunibook.web.responses.LoginResponse;
 import com.greenwich.theunibook.web.responses.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +18,27 @@ public class UserService {
     UserRepository userRepository;
 
 
-    public RegisterResponse register(User user) {
-
+    public RegisterResponse register(RegisterRequest registerRequest)
+    {
         RegisterResponse registerResponse = new RegisterResponse();
+        User user = new User(registerRequest.getFirstName(), registerRequest.getLastName(), registerRequest.getUserName(),
+                             registerRequest.getPassword(), registerRequest.getEmail(), -1, -1);
 
-        User DBuser = userRepository.findByEmail(user.getEmail());
+        try
+        {
+            User savedUser = userRepository.save(user);
 
-        if (DBuser != null) {
-            registerResponse.setMessage("user exists");
-            registerResponse.setUser(DBuser);
-
-        } else {
-
-//            userRepository.save(user);
-            registerResponse.setUser(userRepository.save(user));
+            registerResponse.setUser(savedUser);
             registerResponse.setMessage("registered");
-
         }
-
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            registerResponse.setUser(null);
+            registerResponse.setMessage("register failed");
+        }
         return registerResponse;
+
     }
 
 
