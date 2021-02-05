@@ -2,6 +2,7 @@ package com.greenwich.theunibook.controllers;
 
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.services.UserService;
+import com.greenwich.theunibook.web.requests.RegisterRequest;
 import com.greenwich.theunibook.web.responses.LoginResponse;
 import com.greenwich.theunibook.web.responses.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public RegisterResponse register(@RequestBody User user) {
-        return userService.register(user);
+    public RegisterResponse register(@RequestBody RegisterRequest registerRequest) {
+        return userService.register(registerRequest);
     }
 
 

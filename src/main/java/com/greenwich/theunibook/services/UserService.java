@@ -2,6 +2,7 @@ package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.UserRepository;
+import com.greenwich.theunibook.web.requests.RegisterRequest;
 import com.greenwich.theunibook.web.responses.LoginResponse;
 import com.greenwich.theunibook.web.responses.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,24 +18,28 @@ public class UserService {
     UserRepository userRepository;
 
 
-    public RegisterResponse register(User user) {
-
+    public RegisterResponse register(RegisterRequest registerRequest) {
         RegisterResponse registerResponse = new RegisterResponse();
 
-        User DBuser = userRepository.findByEmail(user.getEmail());
-
-        if (DBuser != null) {
+        if (userRepository.findByEmail(registerRequest.getEmail()) != null && userRepository.findByUsername(registerRequest.getUserName()) != null) {
             registerResponse.setMessage("user exists");
-            registerResponse.setUser(DBuser);
-
+            registerResponse.setUser(null);
         } else {
+            User user = new User(registerRequest.getFirstName(), registerRequest.getLastName(), registerRequest.getUserName(),
+                    registerRequest.getPassword(), registerRequest.getEmail(), 1, 1);
 
-//            userRepository.save(user);
-            registerResponse.setUser(userRepository.save(user));
-            registerResponse.setMessage("registered");
+            try {
+                User savedUser = userRepository.save(user);
+
+                registerResponse.setUser(savedUser);
+                registerResponse.setMessage("registered");
+            } catch (Exception e) {
+                e.printStackTrace();
+                registerResponse.setUser(null);
+                registerResponse.setMessage("register failed");
+            }
 
         }
-
         return registerResponse;
     }
 
@@ -69,7 +74,6 @@ public class UserService {
     }
 
 
-
     public List<User> getAllUsers() {
 
         List<User> users = new ArrayList<>();
@@ -78,8 +82,6 @@ public class UserService {
 
         return users;
     }
-
-
 
 
     public User getUser(int userId) {
