@@ -2,6 +2,7 @@ package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.UserRepository;
+import com.greenwich.theunibook.web.requests.LoginRequest;
 import com.greenwich.theunibook.web.requests.RegisterRequest;
 import com.greenwich.theunibook.web.responses.LoginResponse;
 import com.greenwich.theunibook.web.responses.RegisterResponse;
@@ -44,33 +45,34 @@ public class UserService {
     }
 
 
-    public LoginResponse login(User user) {
-
-        User DBuser = userRepository.findByEmail(user.getEmail());
+    public LoginResponse login(LoginRequest loginRequest) {
 
         LoginResponse loginResponse = new LoginResponse();
 
-        if (DBuser != null) {
+        User user = userRepository.findByEmail(loginRequest.getEmail());
 
-            if (DBuser.getPassword().equals(user.getPassword())) {
-                loginResponse.setUser(DBuser);
+        boolean userExists = user != null;
+
+
+        if (userExists) {
+           boolean passwordMatches = user.getPassword().trim().equals(loginRequest.getPassword());
+
+            if (passwordMatches) {
+
+                loginResponse.setUser(user);
                 loginResponse.setMessage("logged in");
-
-                return loginResponse;
+            } else {
+                loginResponse.setMessage("bad credentials");
+                loginResponse.setUser(null);
             }
 
-            loginResponse.setUser(DBuser);
-            loginResponse.setMessage("incorrect password");
-
-            return loginResponse;
-
         } else {
-            user.setId(-1);
-            loginResponse.setUser(user);
-            loginResponse.setMessage("user does not exist");
-            return loginResponse;
+            loginResponse.setMessage("bad credentials - user doesnt exist");
+            loginResponse.setUser(null);
         }
 
+
+        return loginResponse;
     }
 
 

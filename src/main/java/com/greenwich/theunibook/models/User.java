@@ -26,10 +26,6 @@ public class User {
 
     }
 
-    public User(String password, String email) {
-        this.password = password;
-        this.email = email;
-    }
 
     public User(String firstname, String lastname, String username, String password, String email, int departmentId, int statusId) {
         this.firstname = firstname;

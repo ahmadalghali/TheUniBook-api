@@ -2,6 +2,7 @@ package com.greenwich.theunibook.controllers;
 
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.services.UserService;
+import com.greenwich.theunibook.web.requests.LoginRequest;
 import com.greenwich.theunibook.web.requests.RegisterRequest;
 import com.greenwich.theunibook.web.responses.LoginResponse;
 import com.greenwich.theunibook.web.responses.RegisterResponse;
@@ -25,8 +26,8 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody User user) {
-        return userService.login(user);
+    public LoginResponse login(@RequestBody LoginRequest loginRequest ) {
+        return userService.login(loginRequest);
     }
 
 
