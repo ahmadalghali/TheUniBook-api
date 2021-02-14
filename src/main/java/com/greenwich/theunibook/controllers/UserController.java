@@ -14,16 +14,13 @@ import java.util.List;
 @RestController
 public class UserController {
 
-
     @Autowired
     UserService userService;
-
 
     @PostMapping("/register")
     public RegisterResponse register(@RequestBody RegisterRequest registerRequest) {
         return userService.register(registerRequest);
     }
-
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest loginRequest ) {
@@ -31,14 +28,10 @@ public class UserController {
     }
 
 
-
-
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
-
-
 
 
     @GetMapping("/users/{userId}")

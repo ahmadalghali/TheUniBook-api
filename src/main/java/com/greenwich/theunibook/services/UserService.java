@@ -26,8 +26,9 @@ public class UserService {
             registerResponse.setMessage("user exists");
             registerResponse.setUser(null);
         } else {
-            User user = new User(registerRequest.getFirstName(), registerRequest.getLastName(), registerRequest.getUserName(),
-                    registerRequest.getPassword(), registerRequest.getEmail(), 1, 1);
+//            User user = new User(registerRequest.getFirstName(), registerRequest.getLastName(), registerRequest.getUserName(),
+//                    registerRequest.getPassword(), registerRequest.getEmail(), 1, 1);
+            User user = new User(registerRequest.getEmail(), registerRequest.getPassword());
 
             try {
                 User savedUser = userRepository.save(user);
