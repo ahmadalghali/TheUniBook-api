@@ -22,7 +22,7 @@ public class UserService {
     public RegisterResponse register(RegisterRequest registerRequest) {
         RegisterResponse registerResponse = new RegisterResponse();
 
-        if (userRepository.findByEmail(registerRequest.getEmail()) != null && userRepository.findByUsername(registerRequest.getUserName()) != null) {
+        if (userRepository.findByEmail(registerRequest.getEmail()) != null) {
             registerResponse.setMessage("user exists");
             registerResponse.setUser(null);
         } else {
