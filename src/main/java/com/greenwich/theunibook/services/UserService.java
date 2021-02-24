@@ -27,7 +27,7 @@ public class UserService {
             registerResponse.setUser(null);
         } else {
             User user = new User(registerRequest.getFirstname(), registerRequest.getLastname(),
-                    registerRequest.getEmail(), registerRequest.getPassword(), 1);
+                    registerRequest.getEmail(), registerRequest.getPassword(), registerRequest.getDepartmentId());
 //            User user = new User(registerRequest.getEmail(), registerRequest.getPassword());
 
             try {
