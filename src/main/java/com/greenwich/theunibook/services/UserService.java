@@ -26,9 +26,9 @@ public class UserService {
             registerResponse.setMessage("user exists");
             registerResponse.setUser(null);
         } else {
-//            User user = new User(registerRequest.getFirstName(), registerRequest.getLastName(), registerRequest.getUserName(),
-//                    registerRequest.getPassword(), registerRequest.getEmail(), 1, 1);
-            User user = new User(registerRequest.getEmail(), registerRequest.getPassword());
+            User user = new User(registerRequest.getFirstname(), registerRequest.getLastname(),
+                    registerRequest.getEmail(), registerRequest.getPassword(), 1);
+//            User user = new User(registerRequest.getEmail(), registerRequest.getPassword());
 
             try {
                 User savedUser = userRepository.save(user);
@@ -56,7 +56,7 @@ public class UserService {
 
 
         if (userExists) {
-           boolean passwordMatches = user.getPassword().trim().equals(loginRequest.getPassword());
+            boolean passwordMatches = user.getPassword().trim().equals(loginRequest.getPassword());
 
             if (passwordMatches) {
 
@@ -90,4 +90,46 @@ public class UserService {
     public User getUser(int userId) {
         return userRepository.findById(userId).get();
     }
+
+
+//    // Given values
+//
+//    int achievement = 50; //pushups
+//
+//    int increment = achievement / 10;
+//
+//    int goal = increment;
+//
+//    int attemptCount = 0;
+//
+//
+//    void submitAttempt(int attempt) {
+//        attemptCount++;
+//
+//        boolean achievementCompleted = attempt > achievement;
+//
+//        if (!achievementCompleted) {
+//
+//            boolean goalAchieved = attempt > goal;
+//
+//            if (goalAchieved) {
+//
+//                if (attemptCount == 1) {
+//                    // first attempt
+//                    goal += increment + 3;
+//                } else {
+//                    // struggled ? but achieved
+//                    goal += increment;
+//                }
+//
+//
+//            } else {
+//                // goal not achieved logic
+//            }
+//
+//        } else {
+//            // achievement completed
+//        }
+//    }
+
 }
