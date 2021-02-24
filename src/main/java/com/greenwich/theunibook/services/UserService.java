@@ -1,6 +1,8 @@
 package com.greenwich.theunibook.services;
 
+import com.greenwich.theunibook.models.Department;
 import com.greenwich.theunibook.models.User;
+import com.greenwich.theunibook.repository.DepartmentRepository;
 import com.greenwich.theunibook.repository.UserRepository;
 import com.greenwich.theunibook.web.requests.LoginRequest;
 import com.greenwich.theunibook.web.requests.RegisterRequest;
@@ -18,6 +20,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    DepartmentRepository departmentRepository;
+
 
     public RegisterResponse register(RegisterRequest registerRequest) {
         RegisterResponse registerResponse = new RegisterResponse();
@@ -32,6 +37,7 @@ public class UserService {
 
             try {
                 User savedUser = userRepository.save(user);
+
 
                 registerResponse.setUser(savedUser);
                 registerResponse.setMessage("registered");
@@ -61,6 +67,7 @@ public class UserService {
             if (passwordMatches) {
 
                 loginResponse.setUser(user);
+                loginResponse.setDepartment(departmentRepository.findById(user.getDepartmentId()).get());
                 loginResponse.setMessage("logged in");
             } else {
                 loginResponse.setMessage("bad credentials");
