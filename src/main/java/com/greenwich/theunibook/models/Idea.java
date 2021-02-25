@@ -1,11 +1,13 @@
 package com.greenwich.theunibook.models;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("ideas")
 public class Idea {
     @Column("id_ideas")
+    @Id
     private int id;
     @Column("id_users")
     private int userId;
@@ -25,6 +27,19 @@ public class Idea {
     private String documentPath;
     @Column("date")
     private java.sql.Date date;
+
+
+    protected Idea() {
+
+    }
+
+    public Idea(int userId, int categoryId, String title, String description, String documentPath) {
+        this.userId = userId;
+        this.categoryId = categoryId;
+        this.title = title;
+        this.description = description;
+        this.documentPath = documentPath;
+    }
 
     public Idea(int userId, int categoryId, int statusId, int departmentId, String title, String description, String documentPath, java.sql.Date date) {
         this.userId = userId;
