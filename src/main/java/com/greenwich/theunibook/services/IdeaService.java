@@ -27,10 +27,7 @@ public class IdeaService {
 
     public List<Idea> getIdeas() {
 
-        List<Idea> ideas = new ArrayList<>();
-        ideaRepository.findAll().forEach(ideas::add);
-
-        return ideas;
+        return ideaRepository.getIdeas();
     }
 
     public HashMap<String, Object> addIdea(Idea idea) {
@@ -39,14 +36,19 @@ public class IdeaService {
 
         try {
 
+
+            User ideaAuthor = userRepository.findById(idea.getUserId()).get();
+
             idea.setDate(new Date(System.currentTimeMillis()));
             idea.setStatusId(1);
-            idea.setDepartmentId(userRepository.findById(idea.getUserId()).get().getDepartmentId());
+            idea.setDepartmentId(ideaAuthor.getDepartmentId());
 
             Idea savedIdea = ideaRepository.save(idea);
 
             addIdeaResponse.put("idea", savedIdea);
             addIdeaResponse.put("message", "added");
+            addIdeaResponse.put("ideaAuthor", ideaAuthor);
+
 
         } catch (Exception e) {
 
@@ -56,5 +58,10 @@ public class IdeaService {
         }
         return addIdeaResponse;
 
+    }
+
+    public List<Idea> getIdeasByDepartment(int departmentId) {
+
+        return ideaRepository.getIdeasByDepartment(departmentId);
     }
 }
