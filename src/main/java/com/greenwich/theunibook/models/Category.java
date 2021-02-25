@@ -9,28 +9,27 @@ public class Category {
 
     @Column("id_category_ideas")
     @Id
-    private int Id;
+    private int id;
 
-    @Column("category")
-    private String Category;
+    private String category;
 
     public Category(String category) {
-        Category = category;
+        this.category = category;
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getCategory() {
-        return Category;
+        return category;
     }
 
     public void setCategory(String category) {
-        Category = category;
+        this.category = category;
     }
 }
