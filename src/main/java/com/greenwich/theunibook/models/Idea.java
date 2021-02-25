@@ -1,14 +1,15 @@
 package com.greenwich.theunibook.models;
 
 import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.sql.Date;
 
-
+@Table("ideas")
 public class Idea {
     @Column("id_ideas")
     private int Id;
-    @Column("id_user")
+    @Column("id_users")
     private int UserId;
     @Column("id_category_ideas")
     private int CategoryId;
