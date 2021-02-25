@@ -7,10 +7,11 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("category_ideas")
 public class Category {
 
-    @Column("id_category_ideas")
     @Id
+    @Column("id_category_ideas")
     private int id;
 
+    @Column("category")
     private String category;
 
     public Category(String category) {
