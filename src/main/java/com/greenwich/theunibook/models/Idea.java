@@ -3,109 +3,109 @@ package com.greenwich.theunibook.models;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.sql.Date;
-
 @Table("ideas")
 public class Idea {
     @Column("id_ideas")
-    private int Id;
+    private int id;
     @Column("id_users")
-    private int UserId;
+    private int userId;
     @Column("id_category_ideas")
-    private int CategoryId;
+    private int categoryId;
     @Column("id_idea_status")
-    private int StatusId;
+    private int statusId;
+
     @Column("department_id")
-    private int DepartmentId;
+    private int departmentId;
     @Column("idea_title")
-    private String Title;
+    private String title;
     @Column("idea_description")
-    private String Description;
+    private String description;
+
     @Column("idea_document_path")
-    private String DocumentPath;
+    private String documentPath;
     @Column("date")
-    private java.sql.Date Date;
+    private java.sql.Date date;
 
     public Idea(int userId, int categoryId, int statusId, int departmentId, String title, String description, String documentPath, java.sql.Date date) {
-        UserId = userId;
-        CategoryId = categoryId;
-        StatusId = statusId;
-        DepartmentId = departmentId;
-        Title = title;
-        Description = description;
-        DocumentPath = documentPath;
-        Date = date;
+        this.userId = userId;
+        this.categoryId = categoryId;
+        this.statusId = statusId;
+        this.departmentId = departmentId;
+        this.title = title;
+        this.description = description;
+        this.documentPath = documentPath;
+        this.date = date;
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public int getUserId() {
-        return UserId;
+        return userId;
     }
 
     public void setUserId(int userId) {
-        UserId = userId;
+        this.userId = userId;
     }
 
     public int getCategoryId() {
-        return CategoryId;
+        return categoryId;
     }
 
     public void setCategoryId(int categoryId) {
-        CategoryId = categoryId;
+        this.categoryId = categoryId;
     }
 
     public int getStatusId() {
-        return StatusId;
+        return statusId;
     }
 
     public void setStatusId(int statusId) {
-        StatusId = statusId;
+        this.statusId = statusId;
     }
 
     public int getDepartmentId() {
-        return DepartmentId;
+        return departmentId;
     }
 
     public void setDepartmentId(int departmentId) {
-        DepartmentId = departmentId;
+        this.departmentId = departmentId;
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public String getDocumentPath() {
-        return DocumentPath;
+        return documentPath;
     }
 
     public void setDocumentPath(String documentPath) {
-        DocumentPath = documentPath;
+        this.documentPath = documentPath;
     }
 
     public java.sql.Date getDate() {
-        return Date;
+        return date;
     }
 
     public void setDate(java.sql.Date date) {
-        Date = date;
+        this.date = date;
     }
 }
