@@ -33,6 +33,7 @@ public class UserService {
         } else {
             User user = new User(registerRequest.getFirstname(), registerRequest.getLastname(),
                     registerRequest.getEmail(), registerRequest.getPassword(), registerRequest.getDepartmentId());
+            user.setRole("Staff");
 //            User user = new User(registerRequest.getEmail(), registerRequest.getPassword());
 
             try {
@@ -41,6 +42,7 @@ public class UserService {
 
                 registerResponse.setUser(savedUser);
                 registerResponse.setMessage("registered");
+
             } catch (Exception e) {
                 e.printStackTrace();
                 registerResponse.setUser(null);

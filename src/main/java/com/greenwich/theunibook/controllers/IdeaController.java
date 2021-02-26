@@ -3,6 +3,7 @@ package com.greenwich.theunibook.controllers;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.services.IdeaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,12 @@ public class IdeaController {
     @Autowired
     IdeaService ideaService;
 
+    @GetMapping("/ideas/page-count")
+    public int calculateNumberOfPagesForIdeas() {
+        return ideaService.calculateNumberOfPagesForIdeas();
+    }
+
+
     @GetMapping("/ideas")
     public List<Idea> getIdeas() {
         return ideaService.getIdeas();
@@ -23,8 +30,12 @@ public class IdeaController {
 
     @GetMapping("/ideas/{departmentId}")
     public List<Idea> getIdeasByDepartment(@PathVariable("departmentId") int departmentId) {
-
         return ideaService.getIdeasByDepartment(departmentId);
+    }
+
+    @GetMapping("/ideas/page={page}")
+    public List<Idea> getIdeasPaginated(@PathVariable("page") int page) {
+        return ideaService.getIdeasPaginated(page);
     }
 
 
