@@ -35,9 +35,11 @@ public class IdeaService {
     private ModelMapper modelMapper = new ModelMapper();
 
 
-    public List<Idea> getIdeas() {
+    public List<IdeaDTO> getIdeas() {
 
-        return ideaRepository.getIdeas();
+        return ideaRepository.getIdeas().stream()
+                .map(this::convertToIdeaDTO)
+                .collect(Collectors.toList());
     }
 
     public HashMap<String, Object> addIdea(Idea idea) {
