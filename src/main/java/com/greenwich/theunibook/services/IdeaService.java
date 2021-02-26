@@ -105,7 +105,7 @@ public class IdeaService {
 
 
         getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
-        getIdeasByDepartmentResponse.put("page-count", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
+        getIdeasByDepartmentResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
 
         return getIdeasByDepartmentResponse;
     }
