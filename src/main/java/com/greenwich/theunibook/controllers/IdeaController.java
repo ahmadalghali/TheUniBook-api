@@ -1,5 +1,6 @@
 package com.greenwich.theunibook.controllers;
 
+import com.greenwich.theunibook.dto.IdeaDTO;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.services.IdeaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,13 @@ public class IdeaController {
         return ideaService.getIdeasByDepartment(departmentId);
     }
 
+//    @GetMapping("/ideas/page={page}")
+//    public List<Idea> getIdeasPaginated(@PathVariable("page") int page) {
+//        return ideaService.getIdeasPaginated(page);
+//    }
+
     @GetMapping("/ideas/page={page}")
-    public List<Idea> getIdeasPaginated(@PathVariable("page") int page) {
+    public List<IdeaDTO> getIdeasPaginated(@PathVariable("page") int page) {
         return ideaService.getIdeasPaginated(page);
     }
 

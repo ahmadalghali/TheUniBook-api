@@ -11,6 +11,9 @@ public class Department {
     @Column("department_name")
     private String name;
 
+    protected Department() {
+    }
+
     public Department(String name) {
         this.name = name;
     }

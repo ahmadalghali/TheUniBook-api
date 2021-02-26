@@ -9,6 +9,7 @@ import com.greenwich.theunibook.web.responses.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -22,8 +23,13 @@ public class UserController {
         return userService.register(registerRequest);
     }
 
+//    @PostMapping("/login")
+//    public LoginResponse login(@RequestBody LoginRequest loginRequest ) {
+//        return userService.login(loginRequest);
+//    }
+
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest ) {
+    public HashMap<String, Object> login(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
     }
 

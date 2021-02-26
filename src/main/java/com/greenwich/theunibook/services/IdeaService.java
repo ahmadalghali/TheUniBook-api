@@ -1,9 +1,12 @@
 package com.greenwich.theunibook.services;
 
+import com.greenwich.theunibook.dto.IdeaDTO;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.IdeaRepository;
 import com.greenwich.theunibook.repository.UserRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class IdeaService {
@@ -26,6 +30,9 @@ public class IdeaService {
 
     @Autowired
     UserRepository userRepository;
+
+
+    private ModelMapper modelMapper = new ModelMapper();
 
 
     public List<Idea> getIdeas() {
@@ -68,15 +75,31 @@ public class IdeaService {
         return ideaRepository.getIdeasByDepartment(departmentId);
     }
 
-    public List<Idea> getIdeasPaginated(int page) {
+    public List<IdeaDTO> getIdeasPaginated(int page) {
         PageRequest pageWithFiveIdeas = PageRequest.of(page - 1, 5);
 
         Page<Idea> fiveIdeasPage = ideaRepository.findAll(pageWithFiveIdeas);
 
         List<Idea> fiveIdeas = fiveIdeasPage.getContent();
 
-        return fiveIdeas;
+        List<IdeaDTO> ideaDTOS = fiveIdeas.stream()
+                .map(this::convertToIdeaDTO)
+                .collect(Collectors.toList());
+
+        return ideaDTOS;
     }
+
+
+    private IdeaDTO convertToIdeaDTO(Idea idea) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        IdeaDTO ideaDTO = modelMapper.map(idea, IdeaDTO.class);
+
+        User ideaAuthor = userRepository.findById(idea.getUserId()).get();
+        ideaDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
+
+        return ideaDTO;
+    }
+
 
     public int calculateNumberOfPagesForIdeas() {
 

@@ -1,17 +1,21 @@
 package com.greenwich.theunibook.services;
 
-import com.greenwich.theunibook.models.Department;
+import com.greenwich.theunibook.dto.IdeaDTO;
+import com.greenwich.theunibook.dto.UserDTO;
+import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.DepartmentRepository;
 import com.greenwich.theunibook.repository.UserRepository;
 import com.greenwich.theunibook.web.requests.LoginRequest;
 import com.greenwich.theunibook.web.requests.RegisterRequest;
-import com.greenwich.theunibook.web.responses.LoginResponse;
 import com.greenwich.theunibook.web.responses.RegisterResponse;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -22,6 +26,9 @@ public class UserService {
 
     @Autowired
     DepartmentRepository departmentRepository;
+
+
+    private ModelMapper modelMapper = new ModelMapper();
 
 
     public RegisterResponse register(RegisterRequest registerRequest) {
@@ -54,9 +61,51 @@ public class UserService {
     }
 
 
-    public LoginResponse login(LoginRequest loginRequest) {
+//    public LoginResponse login(LoginRequest loginRequest) {
+//
+//        LoginResponse loginResponse = new LoginResponse();
+//
+//        User user = userRepository.findByEmail(loginRequest.getEmail());
+//
+//        boolean userExists = user != null;
+//
+//
+//        if (userExists) {
+//            boolean passwordMatches = user.getPassword().trim().equals(loginRequest.getPassword());
+//
+//            if (passwordMatches) {
+//
+//                loginResponse.setUser(user);
+//                loginResponse.setDepartment(departmentRepository.findById(user.getDepartmentId()).get());
+//                loginResponse.setMessage("logged in");
+//            } else {
+//                loginResponse.setMessage("bad credentials");
+//                loginResponse.setUser(null);
+//            }
+//
+//        } else {
+//            loginResponse.setMessage("bad credentials - user doesnt exist");
+//            loginResponse.setUser(null);
+//        }
+//
+//
+//        return loginResponse;
+//    }
 
-        LoginResponse loginResponse = new LoginResponse();
+
+    private UserDTO convertToUserْDTO(User user) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        userDTO.setDepartment(departmentRepository.findById(user.getDepartmentId()).get());
+
+        return userDTO;
+    }
+
+
+    public HashMap<String, Object> login(LoginRequest loginRequest) {
+
+        HashMap<String, Object> loginResponse = new HashMap();
 
         User user = userRepository.findByEmail(loginRequest.getEmail());
 
@@ -68,19 +117,18 @@ public class UserService {
 
             if (passwordMatches) {
 
-                loginResponse.setUser(user);
-                loginResponse.setDepartment(departmentRepository.findById(user.getDepartmentId()).get());
-                loginResponse.setMessage("logged in");
+                loginResponse.put("user", convertToUserْDTO(user));
+//                loginResponse.put("department", departmentRepository.findById(user.getDepartmentId()).get());
+                loginResponse.put("message", "logged in");
+
             } else {
-                loginResponse.setMessage("bad credentials");
-                loginResponse.setUser(null);
+
+                loginResponse.put("message", "bad credentials");
             }
 
         } else {
-            loginResponse.setMessage("bad credentials - user doesnt exist");
-            loginResponse.setUser(null);
+            loginResponse.put("message", "bad credentials - user doesnt exist");
         }
-
 
         return loginResponse;
     }
@@ -99,46 +147,5 @@ public class UserService {
     public User getUser(int userId) {
         return userRepository.findById(userId).get();
     }
-
-
-//    // Given values
-//
-//    int achievement = 50; //pushups
-//
-//    int increment = achievement / 10;
-//
-//    int goal = increment;
-//
-//    int attemptCount = 0;
-//
-//
-//    void submitAttempt(int attempt) {
-//        attemptCount++;
-//
-//        boolean achievementCompleted = attempt > achievement;
-//
-//        if (!achievementCompleted) {
-//
-//            boolean goalAchieved = attempt > goal;
-//
-//            if (goalAchieved) {
-//
-//                if (attemptCount == 1) {
-//                    // first attempt
-//                    goal += increment + 3;
-//                } else {
-//                    // struggled ? but achieved
-//                    goal += increment;
-//                }
-//
-//
-//            } else {
-//                // goal not achieved logic
-//            }
-//
-//        } else {
-//            // achievement completed
-//        }
-//    }
 
 }
