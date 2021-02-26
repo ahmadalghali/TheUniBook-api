@@ -25,7 +25,7 @@ public class IdeaController {
 
 
     @GetMapping("/ideas")
-    public List<Idea> getIdeas() {
+    public List<IdeaDTO> getIdeas() {
         return ideaService.getIdeas();
     }
 
