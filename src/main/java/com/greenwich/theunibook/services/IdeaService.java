@@ -10,16 +10,12 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +31,7 @@ public class IdeaService {
     private ModelMapper modelMapper = new ModelMapper();
 
 
-    public List<IdeaDTO> getIdeas() {
+    public List<IdeaDTO> getAllIdeas() {
 
         return ideaRepository.getIdeas().stream()
                 .map(this::convertToIdeaDTO)
@@ -72,23 +68,46 @@ public class IdeaService {
 
     }
 
-    public List<Idea> getIdeasByDepartment(int departmentId) {
+    public HashMap<String, Object> getIdeasByDepartment(int departmentId, int page) {
 
-        return ideaRepository.getIdeasByDepartment(departmentId);
-    }
+        HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
-    public List<IdeaDTO> getIdeasPaginated(int page) {
-        PageRequest pageWithFiveIdeas = PageRequest.of(page - 1, 5);
+        Pageable pageRequestWithFiveIdeas = PageRequest.of(page - 1, 5);
 
-        Page<Idea> fiveIdeasPage = ideaRepository.findAll(pageWithFiveIdeas);
+        Page<Idea> fiveIdeasByDepartmentPage = ideaRepository.findAllByDepartmentId(departmentId, pageRequestWithFiveIdeas);
 
-        List<Idea> fiveIdeas = fiveIdeasPage.getContent();
+//        ideaRepository.findAll()
+        List<Idea> fiveIdeasByDepartment = fiveIdeasByDepartmentPage.getContent();
 
-        List<IdeaDTO> ideaDTOS = fiveIdeas.stream()
+        List<IdeaDTO> ideaDTOS = fiveIdeasByDepartment
+                .stream()
                 .map(this::convertToIdeaDTO)
                 .collect(Collectors.toList());
 
-        return ideaDTOS;
+
+        getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
+        getIdeasByDepartmentResponse.put("page-count", calculateNumberOfPagesBasedOnListSize(ideaDTOS.size()));
+
+        return getIdeasByDepartmentResponse;
+    }
+
+    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page) {
+
+        HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
+
+        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page);
+
+
+        List<IdeaDTO> ideaDTOS = fiveIdeasByDepartmentPaginated
+                .stream()
+                .map(this::convertToIdeaDTO)
+                .collect(Collectors.toList());
+
+
+        getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
+        getIdeasByDepartmentResponse.put("page-count", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
+
+        return getIdeasByDepartmentResponse;
     }
 
 
@@ -103,17 +122,19 @@ public class IdeaService {
     }
 
 
-    public int calculateNumberOfPagesForIdeas() {
+    public int calculateNumberOfPagesBasedOnListSize(int itemCount) {
 
-        int totalIdeasCount = getIdeas().size();
 
-        int numberOfPages = totalIdeasCount / 5;
+        int numberOfPages = itemCount / 5;
 
-        if (totalIdeasCount % 5 > 0) {
+        if (itemCount % 5 > 0) {
             numberOfPages += 1;
         }
 
         return numberOfPages;
-
     }
+
+
+
+
 }

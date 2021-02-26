@@ -18,32 +18,10 @@ public class IdeaController {
     @Autowired
     IdeaService ideaService;
 
-    @GetMapping("/ideas/page-count")
-    public int calculateNumberOfPagesForIdeas() {
-        return ideaService.calculateNumberOfPagesForIdeas();
-    }
-
-
     @GetMapping("/ideas")
-    public List<IdeaDTO> getIdeas() {
-        return ideaService.getIdeas();
+    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page) {
+        return ideaService.getIdeasByDepartmentPaginated(departmentId, page);
     }
-
-    @GetMapping("/ideas/{departmentId}")
-    public List<Idea> getIdeasByDepartment(@PathVariable("departmentId") int departmentId) {
-        return ideaService.getIdeasByDepartment(departmentId);
-    }
-
-//    @GetMapping("/ideas/page={page}")
-//    public List<Idea> getIdeasPaginated(@PathVariable("page") int page) {
-//        return ideaService.getIdeasPaginated(page);
-//    }
-
-    @GetMapping("/ideas/page={page}")
-    public List<IdeaDTO> getIdeasPaginated(@PathVariable("page") int page) {
-        return ideaService.getIdeasPaginated(page);
-    }
-
 
     @PostMapping("/ideas")
     public HashMap<String, Object> addIdea(@RequestBody Idea idea) {  //HashMap<Idea, String>
