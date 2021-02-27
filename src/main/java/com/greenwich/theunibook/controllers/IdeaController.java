@@ -42,8 +42,8 @@ public class IdeaController {
 //        return ideaService.uploadFile(file);
 //    }
 
-    @GetMapping("/ideas/downloadFile/{filename}")
-    public Resource downloadFile(@PathVariable("filename") String filename){
-        return ideaService.downloadFile(filename);
+    @GetMapping("/ideas/downloadFile")
+    public Resource downloadFile(@RequestParam String documentPath) {
+        return ideaService.downloadFile(documentPath);
     }
 }

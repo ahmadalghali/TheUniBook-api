@@ -173,9 +173,9 @@ public class IdeaService {
     }
 
 
-    public Resource downloadFile(String filename) {
+    public Resource downloadFile(String documentPath) {
 
-        Path path = Paths.get("./uploads/" + filename);
+        Path path = Paths.get(documentPath);
 
         UrlResource resource = null;
         try {
