@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +37,13 @@ public class IdeaController {
         return ideaService.addIdea(idea);
     }
 
-    @PostMapping("/fileUpload")
-    public String uploadFile(@RequestParam MultipartFile file) {  //HashMap<Idea, String>
-        return ideaService.uploadFile(file);
+//    @PostMapping("/fileUpload")
+//    public String uploadFile(@RequestParam MultipartFile file) {  //HashMap<Idea, String>
+//        return ideaService.uploadFile(file);
+//    }
+
+    @GetMapping("/ideas/downloadFile/{filename}")
+    public Resource download(@PathVariable("filename") String filename){
+        return ideaService.downloadFile(filename);
     }
 }

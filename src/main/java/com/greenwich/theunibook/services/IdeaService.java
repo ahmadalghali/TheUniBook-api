@@ -14,14 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -54,6 +51,7 @@ public class IdeaService {
         try {
             User ideaAuthor = userRepository.findById(idea.getUserId()).get();
 
+            idea.setDate(new Date(System.currentTimeMillis()));
             idea.setStatusId(1);
             idea.setDepartmentId(ideaAuthor.getDepartmentId());
 
@@ -88,11 +86,8 @@ public class IdeaService {
 
 
         try {
-
-            Path path = Paths.get(destinationFilename);
-
             Files.copy(file.getInputStream(),
-                    path,
+                    Path.of(destinationFilename),
                     StandardCopyOption.REPLACE_EXISTING);
 
             return destinationFilename;
@@ -129,11 +124,11 @@ public class IdeaService {
         return getIdeasByDepartmentResponse;
     }
 
-    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page, int categoryId) {
+    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page) {
 
         HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
-        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page, categoryId);
+        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page);
 
 
         List<IdeaDTO> ideaDTOS = fiveIdeasByDepartmentPaginated
