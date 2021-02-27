@@ -7,6 +7,8 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+
 @Table("ideas")
 public class Idea {
     @Column("id_ideas")
@@ -29,7 +31,7 @@ public class Idea {
     @Column("idea_document_path")
     private String documentPath;
     @Column("date")
-    private java.sql.Date date;
+    private LocalDateTime date = LocalDateTime.now();
 
     @Transient
     @JsonIgnore
@@ -49,7 +51,7 @@ public class Idea {
         this.documentPath = documentPath;
     }
 
-    public Idea(int userId, int categoryId, int statusId, int departmentId, String title, String description, String documentPath, java.sql.Date date) {
+    public Idea(int userId, int categoryId, int statusId, int departmentId, String title, String description, String documentPath) {
         this.userId = userId;
         this.categoryId = categoryId;
         this.statusId = statusId;
@@ -57,7 +59,6 @@ public class Idea {
         this.title = title;
         this.description = description;
         this.documentPath = documentPath;
-        this.date = date;
     }
 
     public int getId() {
@@ -124,11 +125,12 @@ public class Idea {
         this.documentPath = documentPath;
     }
 
-    public java.sql.Date getDate() {
+
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(java.sql.Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
