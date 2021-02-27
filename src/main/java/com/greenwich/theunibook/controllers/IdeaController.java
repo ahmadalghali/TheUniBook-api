@@ -6,6 +6,7 @@ import com.greenwich.theunibook.services.IdeaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +21,8 @@ public class IdeaController {
     IdeaService ideaService;
 
     @GetMapping("/ideas")
-    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page) {
-        return ideaService.getIdeasByDepartmentPaginated(departmentId, page);
+    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page, @RequestParam int categoryId) {
+        return ideaService.getIdeasByDepartmentPaginated(departmentId, page, categoryId);
     }
 
 //    @PostMapping("/ideas")

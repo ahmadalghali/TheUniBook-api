@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -129,11 +130,11 @@ public class IdeaService {
         return getIdeasByDepartmentResponse;
     }
 
-    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page) {
+    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page, int categoryId) {
 
         HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
-        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page);
+        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page, categoryId);
 
 
         List<IdeaDTO> ideaDTOS = fiveIdeasByDepartmentPaginated

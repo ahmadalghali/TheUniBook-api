@@ -27,11 +27,14 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
             "SET @RowsOfPage=5\n" +
             "SELECT * FROM ideas\n" +
             "WHERE department_id = :departmentId\n" +
+            "AND id_category_ideas = :categoryId\n" +
             "ORDER BY DATE DESC\n" +
             "OFFSET (@PageNumber-1)*@RowsOfPage ROWS\n" +
             "FETCH NEXT @RowsOfPage ROWS ONLY")
-    List<Idea> getIdeasByDepartmentIdPaginated(int departmentId, int page);
+    List<Idea> getIdeasByDepartmentIdPaginated(int departmentId, int page, int categoryId);
 
     int countIdeasByDepartmentId(int departmentId);
 
+    @Query("SELECT * FROM ideas WHERE department_id = :departmentId AND id_category_ideas = :categoryId")
+    List<Idea> sortIdeasByCategory (int departmentId, int categoryId);
 }
