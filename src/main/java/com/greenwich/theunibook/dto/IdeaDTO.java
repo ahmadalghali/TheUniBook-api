@@ -14,6 +14,8 @@ public class IdeaDTO {
 
     private int userId;
 
+    private String documentPath;
+
 
     public int getId() {
         return id;
@@ -39,6 +41,13 @@ public class IdeaDTO {
         this.description = description;
     }
 
+    public String getDocumentPath() {
+        return documentPath;
+    }
+
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
+    }
 
     public String getAuthorName() {
         return authorName;

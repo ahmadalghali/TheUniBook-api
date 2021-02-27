@@ -12,10 +12,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,20 +49,25 @@ public class IdeaService {
         HashMap<String, Object> addIdeaResponse = new HashMap();
 
         try {
-
-
             User ideaAuthor = userRepository.findById(idea.getUserId()).get();
 
             idea.setDate(new Date(System.currentTimeMillis()));
             idea.setStatusId(1);
             idea.setDepartmentId(ideaAuthor.getDepartmentId());
 
+            //Save document if it exists
+            if (idea.getDocument() != null) {
+                String documentPath = uploadFile(idea.getDocument());
+                if (documentPath != null) {
+                    idea.setDocumentPath(documentPath);
+                }
+            }
+
             Idea savedIdea = ideaRepository.save(idea);
 
-            addIdeaResponse.put("idea", savedIdea);
+            addIdeaResponse.put("idea", convertToIdeaDTO(savedIdea));
             addIdeaResponse.put("message", "added");
 //            addIdeaResponse.put("ideaAuthor", ideaAuthor);
-
 
         } catch (Exception e) {
 
@@ -65,6 +76,28 @@ public class IdeaService {
             addIdeaResponse.put("message", "failed");
         }
         return addIdeaResponse;
+    }
+
+    public String uploadFile(MultipartFile file) {
+//        log.info("Filename :" + file.getOriginalFilename());
+//        log.info("Size:" + file.getSize());
+//        log.info("ContentType:" + file.getContentType());
+        String destinationFilename = "./uploads/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
+
+
+        try {
+            Files.copy(file.getInputStream(),
+                    Path.of(destinationFilename),
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            return destinationFilename;
+
+        } catch (IOException e) {
+//            throw new RuntimeException(e);
+
+            return null;
+        }
+
 
     }
 
@@ -133,8 +166,6 @@ public class IdeaService {
 
         return numberOfPages;
     }
-
-
 
 
 }

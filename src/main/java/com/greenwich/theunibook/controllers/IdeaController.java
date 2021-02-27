@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +24,18 @@ public class IdeaController {
         return ideaService.getIdeasByDepartmentPaginated(departmentId, page);
     }
 
+//    @PostMapping("/ideas")
+//    public HashMap<String, Object> addIdea(@RequestBody Idea idea) {  //HashMap<Idea, String>
+//        return ideaService.addIdea(idea);
+//    }
+
     @PostMapping("/ideas")
-    public HashMap<String, Object> addIdea(@RequestBody Idea idea) {  //HashMap<Idea, String>
+    public HashMap<String, Object> addIdea(@ModelAttribute Idea idea) {  //HashMap<Idea, String>
         return ideaService.addIdea(idea);
     }
 
-
+    @PostMapping("/fileUpload")
+    public String uploadFile(@RequestParam MultipartFile file) {  //HashMap<Idea, String>
+        return ideaService.uploadFile(file);
+    }
 }
