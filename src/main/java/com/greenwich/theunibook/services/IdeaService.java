@@ -53,7 +53,6 @@ public class IdeaService {
         try {
             User ideaAuthor = userRepository.findById(idea.getUserId()).get();
 
-            idea.setDate(new Date(System.currentTimeMillis()));
             idea.setStatusId(1);
             idea.setDepartmentId(ideaAuthor.getDepartmentId());
 
