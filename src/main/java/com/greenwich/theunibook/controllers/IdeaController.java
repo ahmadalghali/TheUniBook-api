@@ -43,7 +43,7 @@ public class IdeaController {
 //    }
 
     @GetMapping("/ideas/downloadFile/{filename}")
-    public Resource download(@PathVariable("filename") String filename){
+    public Resource downloadFile(@PathVariable("filename") String filename){
         return ideaService.downloadFile(filename);
     }
 }

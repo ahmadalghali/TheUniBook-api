@@ -8,6 +8,8 @@ import com.greenwich.theunibook.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import java.util.HashMap;
@@ -51,7 +55,6 @@ public class IdeaService {
         try {
             User ideaAuthor = userRepository.findById(idea.getUserId()).get();
 
-            idea.setDate(new Date(System.currentTimeMillis()));
             idea.setStatusId(1);
             idea.setDepartmentId(ideaAuthor.getDepartmentId());
 
@@ -85,9 +88,11 @@ public class IdeaService {
         String destinationFilename = "./uploads/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
 
 
+
         try {
+            Path path = Paths.get(destinationFilename);
             Files.copy(file.getInputStream(),
-                    Path.of(destinationFilename),
+                    path,
                     StandardCopyOption.REPLACE_EXISTING);
 
             return destinationFilename;
@@ -124,11 +129,11 @@ public class IdeaService {
         return getIdeasByDepartmentResponse;
     }
 
-    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page) {
+    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page, int categoryId) {
 
         HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
-        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page);
+        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page, categoryId);
 
 
         List<IdeaDTO> ideaDTOS = fiveIdeasByDepartmentPaginated
@@ -168,4 +173,16 @@ public class IdeaService {
     }
 
 
+    public Resource downloadFile(String filename) {
+
+        Path path = Paths.get("./uploads/" + filename);
+
+        UrlResource resource = null;
+        try {
+            resource = new UrlResource(path.toUri());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        return resource;
+    }
 }
