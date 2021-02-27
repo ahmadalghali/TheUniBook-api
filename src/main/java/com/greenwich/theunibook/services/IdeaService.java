@@ -14,9 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Date;
 import java.util.HashMap;
@@ -86,8 +88,11 @@ public class IdeaService {
 
 
         try {
+
+            Path path = Paths.get(destinationFilename);
+
             Files.copy(file.getInputStream(),
-                    Path.of(destinationFilename),
+                    path,
                     StandardCopyOption.REPLACE_EXISTING);
 
             return destinationFilename;
