@@ -23,8 +23,13 @@ public class IdeaController {
     IdeaService ideaService;
 
     @GetMapping("/ideas")
-    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page, @RequestParam int categoryId) {
-        return ideaService.getIdeasByDepartmentPaginated(departmentId, page, categoryId);
+    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page, @RequestParam(required=false) Integer categoryId) {
+        if (categoryId == null){
+            return ideaService.getIdeasByDepartmentPaginated(departmentId, page);
+        }
+        else{
+            return ideaService.sortIdeasByCategoryPaginated(departmentId, page, categoryId);
+        }
     }
 
 //    @PostMapping("/ideas")

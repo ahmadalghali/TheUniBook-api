@@ -129,11 +129,30 @@ public class IdeaService {
         return getIdeasByDepartmentResponse;
     }
 
-    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page, int categoryId) {
+    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page) {
 
         HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
-        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page, categoryId);
+        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page);
+
+
+        List<IdeaDTO> ideaDTOS = fiveIdeasByDepartmentPaginated
+                .stream()
+                .map(this::convertToIdeaDTO)
+                .collect(Collectors.toList());
+
+
+        getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
+        getIdeasByDepartmentResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
+
+        return getIdeasByDepartmentResponse;
+    }
+
+    public HashMap<String, Object> sortIdeasByCategoryPaginated(int departmentId, int page, int categoryId) {
+
+        HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
+
+        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.sortIdeasByCategoryPaginated(departmentId, page, categoryId);
 
 
         List<IdeaDTO> ideaDTOS = fiveIdeasByDepartmentPaginated
