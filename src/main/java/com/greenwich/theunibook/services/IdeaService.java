@@ -8,14 +8,21 @@ import com.greenwich.theunibook.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -129,7 +136,7 @@ public class IdeaService {
         return getIdeasByDepartmentResponse;
     }
 
-    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page) {
+    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page, int categoryId) {
 
         HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
@@ -191,17 +198,36 @@ public class IdeaService {
         return numberOfPages;
     }
 
+    public ResponseEntity<Object> downloadFile(String documentPath) throws FileNotFoundException {
 
-    public Resource downloadFile(String documentPath) {
+        String filename = "D:/work/tree.jpg";
+        File file = new File(filename);
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
-        Path path = Paths.get(documentPath);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition",
+                String.format("attachment; filename=\"%s\"", file.getName()));
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
 
-        UrlResource resource = null;
-        try {
-            resource = new UrlResource(path.toUri());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-        return resource;
+        ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.parseMediaType("application/txt")).body(resource);
+
+        return responseEntity;
     }
+
+//    public Resource downloadFile(String documentPath) {
+//
+//        Path path = Paths.get(documentPath);
+//
+//        UrlResource resource = null;
+//        try {
+//            resource = new UrlResource(path.toUri());
+//        } catch (MalformedURLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return resource;
+//    }
 }
