@@ -6,13 +6,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
 
     @Query(value = "SELECT * FROM users  WHERE email = :email")
     User findByEmail(@Param("email") String email);
 
-    @Query(value = "SELECT * FROM users  WHERE username = :username")
-    User findByUsername(@Param("username") String username);
+    @Query(value = "SELECT * FROM users")
+    List<User> getAllUsers();
 
 }

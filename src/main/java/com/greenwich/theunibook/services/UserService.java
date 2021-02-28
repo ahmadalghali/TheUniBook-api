@@ -2,6 +2,7 @@ package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.dto.IdeaDTO;
 import com.greenwich.theunibook.dto.UserDTO;
+import com.greenwich.theunibook.enums.UserRole;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.DepartmentRepository;
@@ -40,7 +41,7 @@ public class UserService {
         } else {
             User user = new User(registerRequest.getFirstname(), registerRequest.getLastname(),
                     registerRequest.getEmail(), registerRequest.getPassword(), registerRequest.getDepartmentId());
-            user.setRole("Staff");
+            user.setRole(UserRole.STAFF);
 //            User user = new User(registerRequest.getEmail(), registerRequest.getPassword());
 
             try {
@@ -136,11 +137,7 @@ public class UserService {
 
     public List<User> getAllUsers() {
 
-        List<User> users = new ArrayList<>();
-
-        userRepository.findAll().forEach(users::add);
-
-        return users;
+        return userRepository.getAllUsers();
     }
 
 

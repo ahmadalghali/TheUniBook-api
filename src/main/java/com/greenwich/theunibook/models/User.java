@@ -1,5 +1,6 @@
 package com.greenwich.theunibook.models;
 
+import com.greenwich.theunibook.enums.UserRole;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -18,7 +19,7 @@ public class User {
     private String password;
     @Column("id_department")
     private int departmentId;
-    private String role;
+    private UserRole role;
 
 
     protected User() {
@@ -86,11 +87,19 @@ public class User {
         this.departmentId = departmentId;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
+
+    //    public String getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
 }
