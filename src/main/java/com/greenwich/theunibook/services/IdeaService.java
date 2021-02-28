@@ -200,16 +200,16 @@ public class IdeaService {
 
     public ResponseEntity<Object> downloadFile(String documentPath) throws FileNotFoundException {
 
-        String filename = "D:/work/tree.jpg";
-        File file = new File(filename);
+//        String filename = "D:/work/tree.jpg";
+        File file = new File(documentPath);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
                 String.format("attachment; filename=\"%s\"", file.getName()));
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
+//        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+//        headers.add("Pragma", "no-cache");
+//        headers.add("Expires", "0");
 
         ResponseEntity<Object> responseEntity = ResponseEntity.ok().headers(headers)
                 .contentLength(file.length())
@@ -217,6 +217,7 @@ public class IdeaService {
 
         return responseEntity;
     }
+
 
 //    public Resource downloadFile(String documentPath) {
 //
