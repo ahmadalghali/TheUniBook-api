@@ -136,7 +136,7 @@ public class IdeaService {
         return getIdeasByDepartmentResponse;
     }
 
-    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page, int categoryId) {
+    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page) {
 
         HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
