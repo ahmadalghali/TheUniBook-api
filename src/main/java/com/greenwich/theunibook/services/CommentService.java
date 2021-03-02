@@ -39,6 +39,7 @@ public class CommentService {
 
             Comment savedComment = commentRepository.save(comment);
             postCommentResponse.put("comment", savedComment);
+            postCommentResponse.put("message", "comment saved");
 
             //Get the email of the author of the idea
             String ideaAuthorEmail = userRepository.getIdeaAuthorEmail(comment.getIdeaId());
@@ -48,21 +49,23 @@ public class CommentService {
              //Check if the commenter is the same author of the idea so you don't send an email to them
             if (comment.getAuthorId() != ideaAuthorId) {
                 //Notify the author of the idea that a comment was left on their idea post
-                if(notifyIdeaAuthorByEmail(ideaAuthorEmail)) {
-                    postCommentResponse.put("message", "comment saved and email sent");
-                }
-                else {
-                    postCommentResponse.put("message", "comment saved and email not sent");
-                }
-            }
-            else {
-                postCommentResponse.put("message", "comment saved and email not sent because same author");
-            }
+                notifyIdeaAuthorByEmail(ideaAuthorEmail);
 
+//                if(notifyIdeaAuthorByEmail(ideaAuthorEmail)) {
+//                    postCommentResponse.put("message", "comment saved and email sent");
+//                }
+//                else {
+//                    postCommentResponse.put("message", "comment saved and email not sent");
+//                }
+            }
+//            else {
+//                postCommentResponse.put("message", "comment saved and email not sent because same author");
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
             postCommentResponse.put("message", "failed to save comment or send email");
+            //hello dude
 
         }
 
@@ -78,7 +81,7 @@ public class CommentService {
             mail.setFrom("grefurniture@outlook.com");
             mail.setTo(ideaAuthorEmail);
             mail.setSubject("Comment Added to Post!");
-            mail.setText("Your Idea Post has received a comment click here to check it out: \nhttps://theunibook.netlify.app/comments-2.html\nThanks,\nTheUniBook Team");
+            mail.setText("\n\nYour Idea Post has received a comment click here to check it out: \nhttps://theunibook.netlify.app/comments-2.html\nThanks,\nTheUniBook Team");
             this.sender.send(mail);
 
             return true;
