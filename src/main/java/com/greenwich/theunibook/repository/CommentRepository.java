@@ -13,5 +13,12 @@ public interface CommentRepository extends CrudRepository<Comment, Integer> {
 
     List<Comment> getAllByIdeaIdOrderByDateDesc(int ideaId);
 
+    @Query("select id_users from ideas where id_ideas = :ideaId")
+    int getIdeaAuthorId(int ideaId);
+
+    @Query("SELECT users.email\n" +
+            "FROM users\n" +
+            "INNER JOIN ideas ON users.id_users=ideas.id_users where id_ideas = :ideaId")
+    String getIdeaAuthorEmail(int ideaId);
 
 }

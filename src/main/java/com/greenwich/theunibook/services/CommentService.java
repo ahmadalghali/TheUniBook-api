@@ -4,19 +4,15 @@ import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.CommentRepository;
 import com.greenwich.theunibook.repository.UserRepository;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.apache.commons.validator.routines.EmailValidator;
 
-
-import javax.mail.*;
-import javax.mail.internet.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Properties;
 
 @Service
 public class CommentService {
@@ -42,48 +38,58 @@ public class CommentService {
             postCommentResponse.put("message", "comment saved");
 
 
-
-            //Get the email of the author of the idea
-            String ideaAuthorEmail = userRepository.getIdeaAuthorEmail(comment.getIdeaId());
-
-            int ideaAuthorId = userRepository.getIdeaAuthorId(comment.getIdeaId());
-
-             //Check if the commenter is the same author of the idea so you don't send an email to them
-            if (comment.getAuthorId() != ideaAuthorId) {
-                //Notify the author of the idea that a comment was left on their idea post
-                if(!notifyIdeaAuthorByEmail(ideaAuthorEmail)) {
-                    postCommentResponse.put("message", "failed to send email");
-                };
-
-            }
-
         } catch (Exception e) {
             e.printStackTrace();
-            postCommentResponse.put("message", "failed to save comment or send email");
-            //hello dude
+            postCommentResponse.put("message", "failed to save comment");
         }
         return postCommentResponse;
     }
 
-    private boolean notifyIdeaAuthorByEmail(String ideaAuthorEmail) {
+
+    public HashMap<String, Object> notifyIdeaAuthorByEmail(Comment comment) {
+
+        HashMap<String, Object> emailResponse = new HashMap<>();
+
 
         try {
+            //Get the email of the author of the idea
+            String ideaAuthorEmail = commentRepository.getIdeaAuthorEmail(comment.getIdeaId());
+
+
+            int ideaAuthorId = commentRepository.getIdeaAuthorId(comment.getIdeaId());
+
+
+            //Check if the commenter is the same author of the idea so you don't send an email to them
+            if (comment.getAuthorId() == ideaAuthorId) {
+                emailResponse.put("message", "email not sent - commenter is idea author");
+                return emailResponse;
+            }
+
+
             EmailValidator emailValidator = EmailValidator.getInstance();
-            if(emailValidator.isValid(ideaAuthorEmail)) {
+            if (emailValidator.isValid(ideaAuthorEmail)) {
                 SimpleMailMessage mail = new SimpleMailMessage();
                 mail.setFrom("grefurniture@outlook.com");
                 mail.setTo(ideaAuthorEmail);
                 mail.setSubject("Comment Added to Post!");
-                mail.setText("\n\nYour Idea Post has received a comment click here to check it out: \nhttps://theunibook.netlify.app/comments-2.html\nThanks,\nTheUniBook Team");
+                mail.setText("\n\nYour Idea Post has received a comment click here to check it out: \nhttps://theunibook.netlify.app\nThanks,\nTheUniBook Team");
                 this.sender.send(mail);
-                return true;
+
+                emailResponse.put("message", "email sent");
+
+
+            } else {
+                emailResponse.put("message", "email invalid");
             }
-            return false;
+
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            emailResponse.put("message", "failed to send email");
+
         }
+
+        return emailResponse;
     }
 
 

@@ -20,6 +20,11 @@ public class CommentController {
         return commentService.postComment(comment);
     }
 
+    @PostMapping("/comments/email")
+    public HashMap<String, Object> notifyIdeaAuthorByEmail(@RequestBody Comment comment) {
+        return commentService.notifyIdeaAuthorByEmail(comment);
+    }
+
     @GetMapping("/comments")
     public List<Comment> getCommentsForIdea(@RequestParam int ideaId) {
         return commentService.getCommentsForIdea(ideaId);

@@ -28,6 +28,7 @@ public class IdeaController {
     @Autowired
     IdeaService ideaService;
 
+
     @GetMapping("/ideas")
     public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page, @RequestParam(required = false) Integer categoryId) {
         if (categoryId == null) {
