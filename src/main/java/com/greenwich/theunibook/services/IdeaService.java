@@ -218,4 +218,21 @@ public class IdeaService {
         return responseEntity;
     }
 
+    public IdeaDTO getIdea(int ideaId) {
+        return convertToIdeaDTO(ideaRepository.findById(ideaId).get());
+    }
+
+
+//    public Resource downloadFile(String documentPath) {
+//
+//        Path path = Paths.get(documentPath);
+//
+//        UrlResource resource = null;
+//        try {
+//            resource = new UrlResource(path.toUri());
+//        } catch (MalformedURLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return resource;
+//    }
 }

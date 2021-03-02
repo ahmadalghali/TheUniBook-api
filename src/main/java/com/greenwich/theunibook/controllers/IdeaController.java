@@ -29,13 +29,17 @@ public class IdeaController {
     IdeaService ideaService;
 
     @GetMapping("/ideas")
-    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page, @RequestParam(required=false) Integer categoryId) {
-        if (categoryId == null){
+    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page, @RequestParam(required = false) Integer categoryId) {
+        if (categoryId == null) {
             return ideaService.getIdeasByDepartmentPaginated(departmentId, page);
-        }
-        else{
+        } else {
             return ideaService.sortIdeasByCategoryPaginated(departmentId, page, categoryId);
         }
+    }
+
+    @GetMapping("/ideas/{ideaId}")
+    public IdeaDTO getIdea(@PathVariable("ideaId") int ideaId) {
+        return ideaService.getIdea(ideaId);
     }
 
 //    @PostMapping("/ideas")

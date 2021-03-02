@@ -1,7 +1,9 @@
 package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.models.Comment;
+import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.CommentRepository;
+import com.greenwich.theunibook.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -11,6 +13,7 @@ import javax.mail.*;
 import javax.mail.internet.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Properties;
 
 @Service
@@ -19,6 +22,8 @@ public class CommentService {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    UserRepository userRepository;
 
 
     public HashMap<String, Object> postComment(Comment comment) {
@@ -98,6 +103,19 @@ public class CommentService {
 
     public List<Comment> getCommentsForIdea(int ideaId) {
 
-        return commentRepository.getAllByIdeaIdOrderByDateDesc(ideaId);
+        List<Comment> comments = commentRepository.getAllByIdeaIdOrderByDateDesc(ideaId)
+                .stream()
+                .map(this::addAuthorName)
+                .collect(Collectors.toList());
+        return comments;
+    }
+
+    private Comment addAuthorName(Comment comment) {
+
+        User author = userRepository.findById(comment.getAuthorId()).get();
+
+        comment.setAuthorName(author.getFirstname() + " " + author.getLastname());
+
+        return comment;
     }
 }

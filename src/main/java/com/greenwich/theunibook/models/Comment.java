@@ -1,6 +1,7 @@
 package com.greenwich.theunibook.models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -21,6 +22,10 @@ public class Comment {
 
     @Column("id_users")
     private int authorId;
+
+    @Transient
+    private String authorName;
+
 
     private LocalDateTime date = LocalDateTime.now();
 
@@ -68,5 +73,13 @@ public class Comment {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 }
