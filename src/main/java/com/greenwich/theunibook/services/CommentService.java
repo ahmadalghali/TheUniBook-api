@@ -74,7 +74,7 @@ public class CommentService {
             EmailValidator emailValidator = EmailValidator.getInstance();
             if (emailValidator.isValid(ideaAuthorEmail)) {
                 SimpleMailMessage mail = new SimpleMailMessage();
-                mail.setFrom("grefurniture@outlook.com");
+                mail.setFrom("theunibook1@gmail.com");
                 mail.setTo(ideaAuthorEmail);
                 mail.setSubject("Comment Added to Post!");
                 mail.setText("\n\nYour Idea Post has received a comment click here to check it out: \nhttps://theunibook.netlify.app\nThanks,\nTheUniBook Team");
