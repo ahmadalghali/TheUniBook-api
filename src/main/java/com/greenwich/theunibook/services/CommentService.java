@@ -9,10 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.apache.commons.validator.routines.EmailValidator;
 
+
+import javax.mail.*;
+import javax.mail.internet.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Properties;
 
 @Service
 public class CommentService {
