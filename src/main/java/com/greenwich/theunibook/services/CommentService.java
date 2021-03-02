@@ -41,6 +41,8 @@ public class CommentService {
             postCommentResponse.put("comment", savedComment);
             postCommentResponse.put("message", "comment saved");
 
+
+
             //Get the email of the author of the idea
             String ideaAuthorEmail = userRepository.getIdeaAuthorEmail(comment.getIdeaId());
 
@@ -53,44 +55,35 @@ public class CommentService {
                     postCommentResponse.put("message", "failed to send email");
                 };
 
-//                if(notifyIdeaAuthorByEmail(ideaAuthorEmail)) {
-//                    postCommentResponse.put("message", "comment saved and email sent");
-//                }
-//                else {
-//                    postCommentResponse.put("message", "comment saved and email not sent");
-//                }
             }
-//            else {
-//                postCommentResponse.put("message", "comment saved and email not sent because same author");
-//            }
 
         } catch (Exception e) {
             e.printStackTrace();
             postCommentResponse.put("message", "failed to save comment or send email");
             //hello dude
-
         }
-
         return postCommentResponse;
     }
 
-    private boolean notifyIdeaAuthorByEmail(String ideaAuthorEmail) throws MessagingException {
+    private boolean notifyIdeaAuthorByEmail(String ideaAuthorEmail) {
 
-        EmailValidator emailValidator = EmailValidator.getInstance();
+        try {
+            EmailValidator emailValidator = EmailValidator.getInstance();
+            if(emailValidator.isValid(ideaAuthorEmail)) {
+                SimpleMailMessage mail = new SimpleMailMessage();
+                mail.setFrom("grefurniture@outlook.com");
+                mail.setTo(ideaAuthorEmail);
+                mail.setSubject("Comment Added to Post!");
+                mail.setText("\n\nYour Idea Post has received a comment click here to check it out: \nhttps://theunibook.netlify.app/comments-2.html\nThanks,\nTheUniBook Team");
+                this.sender.send(mail);
+                return true;
+            }
+            return false;
 
-        if(emailValidator.isValid(ideaAuthorEmail)) {
-            SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setFrom("grefurniture@outlook.com");
-            mail.setTo(ideaAuthorEmail);
-            mail.setSubject("Comment Added to Post!");
-            mail.setText("\n\nYour Idea Post has received a comment click here to check it out: \nhttps://theunibook.netlify.app/comments-2.html\nThanks,\nTheUniBook Team");
-            this.sender.send(mail);
-
-            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-
-        return false;
-
     }
 
 
