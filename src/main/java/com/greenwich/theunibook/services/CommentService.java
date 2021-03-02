@@ -49,7 +49,9 @@ public class CommentService {
              //Check if the commenter is the same author of the idea so you don't send an email to them
             if (comment.getAuthorId() != ideaAuthorId) {
                 //Notify the author of the idea that a comment was left on their idea post
-                notifyIdeaAuthorByEmail(ideaAuthorEmail);
+                if(!notifyIdeaAuthorByEmail(ideaAuthorEmail)) {
+                    postCommentResponse.put("message", "failed to send email");
+                };
 
 //                if(notifyIdeaAuthorByEmail(ideaAuthorEmail)) {
 //                    postCommentResponse.put("message", "comment saved and email sent");
