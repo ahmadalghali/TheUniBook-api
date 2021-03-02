@@ -37,17 +37,28 @@ public class CommentService {
 
         try {
 
-
-
             Comment savedComment = commentRepository.save(comment);
-
             postCommentResponse.put("comment", savedComment);
-            postCommentResponse.put("message", "comment saved");
 
             //Get the email of the author of the idea
-            String authorEmail = commentRepository.getIdeaAuthorEmail(comment.getIdeaId());
-            //Notify the author of the idea that a comment was left on their idea post
-            notifyIdeaAuthorByEmail(authorEmail);
+            String ideaAuthorEmail = userRepository.getIdeaAuthorEmail(comment.getIdeaId());
+
+            int ideaAuthorId = userRepository.getIdeaAuthorId(comment.getIdeaId());
+
+             //Check if the commenter is the same author of the idea so you don't send an email to them
+            if (comment.getAuthorId() != ideaAuthorId) {
+                //Notify the author of the idea that a comment was left on their idea post
+                if(notifyIdeaAuthorByEmail(ideaAuthorEmail)) {
+                    postCommentResponse.put("message", "comment saved and email sent");
+                }
+                else {
+                    postCommentResponse.put("message", "comment saved and email not sent");
+                }
+            }
+            else {
+                postCommentResponse.put("message", "comment saved and email not sent because same author");
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,9 +76,9 @@ public class CommentService {
         if(emailValidator.isValid(ideaAuthorEmail)) {
             SimpleMailMessage mail = new SimpleMailMessage();
             mail.setFrom("grefurniture@outlook.com");
-            mail.setTo("a@hot.com");
-            mail.setSubject("Testing Email Service");
-            mail.setText("Test email content");
+            mail.setTo(ideaAuthorEmail);
+            mail.setSubject("Comment Added to Post!");
+            mail.setText("Your Idea Post has received a comment click here to check it out: \nhttps://theunibook.netlify.app/comments-2.html\nThanks,\nTheUniBook Team");
             this.sender.send(mail);
 
             return true;
