@@ -28,6 +28,9 @@ public class Idea {
     @Column("idea_description")
     private String description;
 
+    @Column("is_anonymous")
+    private boolean isAnonymous;
+
     @Column("idea_document_path")
     private String documentPath;
     @Column("date")
@@ -136,6 +139,14 @@ public class Idea {
 
     public MultipartFile getDocument() {
         return document;
+    }
+
+    public boolean isAnonymous() {
+        return isAnonymous;
+    }
+
+    public void setAnonymous(boolean anonymous) {
+        isAnonymous = anonymous;
     }
 
     public void setDocument(MultipartFile document) {

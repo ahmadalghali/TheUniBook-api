@@ -16,6 +16,8 @@ public class IdeaDTO {
 
     private String documentPath;
 
+    private Boolean isAnonymous;
+
 
     public int getId() {
         return id;
@@ -63,5 +65,13 @@ public class IdeaDTO {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public Boolean getAnonymous() {
+        return isAnonymous;
+    }
+
+    public void setAnonymous(Boolean anonymous) {
+        isAnonymous = anonymous;
     }
 }

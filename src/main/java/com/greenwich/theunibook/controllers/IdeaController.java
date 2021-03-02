@@ -48,16 +48,6 @@ public class IdeaController {
         return ideaService.addIdea(idea);
     }
 
-//    @PostMapping("/fileUpload")
-//    public String uploadFile(@RequestParam MultipartFile file) {  //HashMap<Idea, String>
-//        return ideaService.uploadFile(file);
-//    }
-
-//    @GetMapping("/ideas/downloadFile")
-//    public Resource  downloadFile(@RequestParam String documentPath){
-//        return ideaService.downloadFile(documentPath);
-//    }
-
     @GetMapping("/ideas/downloadFile")
     public ResponseEntity<Object> downloadFile(@RequestParam String documentPath) throws FileNotFoundException {
         return ideaService.downloadFile(documentPath);

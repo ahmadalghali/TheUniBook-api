@@ -89,12 +89,8 @@ public class IdeaService {
     }
 
     public String uploadFile(MultipartFile file) {
-//        log.info("Filename :" + file.getOriginalFilename());
-//        log.info("Size:" + file.getSize());
-//        log.info("ContentType:" + file.getContentType());
+
         String destinationFilename = "./uploads/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
-
-
 
         try {
             Path path = Paths.get(destinationFilename);
@@ -105,7 +101,6 @@ public class IdeaService {
             return destinationFilename;
 
         } catch (IOException e) {
-//            throw new RuntimeException(e);
 
             return null;
         }
@@ -179,8 +174,13 @@ public class IdeaService {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         IdeaDTO ideaDTO = modelMapper.map(idea, IdeaDTO.class);
 
+
         User ideaAuthor = userRepository.findById(idea.getUserId()).get();
-        ideaDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
+        if (idea.isAnonymous()) {
+            ideaDTO.setAuthorName("Anonymous");
+        } else {
+            ideaDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
+        }
 
         return ideaDTO;
     }
@@ -200,7 +200,7 @@ public class IdeaService {
 
     public ResponseEntity<Object> downloadFile(String documentPath) throws FileNotFoundException {
 
-//        String filename = "D:/work/tree.jpg";
+
         File file = new File(documentPath);
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
@@ -218,17 +218,4 @@ public class IdeaService {
         return responseEntity;
     }
 
-
-//    public Resource downloadFile(String documentPath) {
-//
-//        Path path = Paths.get(documentPath);
-//
-//        UrlResource resource = null;
-//        try {
-//            resource = new UrlResource(path.toUri());
-//        } catch (MalformedURLException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return resource;
-//    }
 }
