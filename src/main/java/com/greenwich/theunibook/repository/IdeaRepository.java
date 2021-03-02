@@ -1,5 +1,6 @@
 package com.greenwich.theunibook.repository;
 
+import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.models.Idea;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +46,9 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
     List<Idea> sortIdeasByCategoryPaginated(int departmentId, int page, int categoryId);
 
     int countIdeasByDepartmentId(int departmentId);
+
+    @Query("UPDATE ideas SET idea_likes = idea_likes + 1 WHERE id_ideas = :ideaId")
+    List<Idea> addIdeaLike(int ideaId);
 
     @Query("SELECT * FROM ideas WHERE department_id = :departmentId AND id_category_ideas = :categoryId")
     List<Idea> sortIdeasByCategory (int departmentId, int categoryId);

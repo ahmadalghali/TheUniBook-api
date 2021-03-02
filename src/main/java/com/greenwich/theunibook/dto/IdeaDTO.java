@@ -18,6 +18,13 @@ public class IdeaDTO {
 
     private Boolean isAnonymous;
 
+    private int likes;
+
+    private int dislikes;
+
+
+
+
 
     public int getId() {
         return id;
@@ -73,5 +80,21 @@ public class IdeaDTO {
 
     public void setAnonymous(Boolean anonymous) {
         isAnonymous = anonymous;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 }

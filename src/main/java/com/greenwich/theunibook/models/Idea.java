@@ -8,6 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table("ideas")
 public class Idea {
@@ -40,7 +41,11 @@ public class Idea {
     @JsonIgnore
     private MultipartFile document;
 
-
+//    @Column("idea_likes")
+//    private int ideaLikes;
+//
+//    @Column("idea_dislikes")
+//    private int ideaDislikes;
 
     protected Idea() {
 
@@ -153,5 +158,20 @@ public class Idea {
         this.document = document;
     }
 
+//    public int getIdeaLikes() {
+//        return ideaLikes;
+//    }
+//
+//    public void setIdeaLikes(int ideaLikes) {
+//        this.ideaLikes = ideaLikes;
+//    }
+//
+//    public int getIdeaDislikes() {
+//        return ideaDislikes;
+//    }
+//
+//    public void setIdeaDislikes(int ideaDislikes) {
+//        this.ideaDislikes = ideaDislikes;
+//    }
 
 }

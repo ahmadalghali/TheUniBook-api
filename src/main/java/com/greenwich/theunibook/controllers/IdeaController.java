@@ -1,6 +1,7 @@
 package com.greenwich.theunibook.controllers;
 
 import com.greenwich.theunibook.dto.IdeaDTO;
+import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.services.IdeaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class IdeaController {
 
 
     @GetMapping("/ideas")
-    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page, @RequestParam(required = false) Integer categoryId) {
+    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
+                                            @RequestParam(required = false) Integer categoryId) {
         if (categoryId == null) {
             return ideaService.getIdeasByDepartmentPaginated(departmentId, page);
         } else {
@@ -52,6 +54,8 @@ public class IdeaController {
     public HashMap<String, Object> addIdea(@ModelAttribute Idea idea) {  //HashMap<Idea, String>
         return ideaService.addIdea(idea);
     }
+
+
 
     @GetMapping("/ideas/downloadFile")
     public ResponseEntity<Object> downloadFile(@RequestParam String documentPath) throws FileNotFoundException {

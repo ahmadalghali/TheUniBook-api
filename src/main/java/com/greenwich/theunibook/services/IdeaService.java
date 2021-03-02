@@ -1,9 +1,11 @@
 package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.dto.IdeaDTO;
+import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.IdeaRepository;
+import com.greenwich.theunibook.repository.RatingRepository;
 import com.greenwich.theunibook.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -43,6 +45,9 @@ public class IdeaService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RatingRepository ratingRepository;
 
 
     private ModelMapper modelMapper = new ModelMapper();
@@ -181,6 +186,9 @@ public class IdeaService {
         } else {
             ideaDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
         }
+
+        ideaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));
+        ideaDTO.setDislikes(ratingRepository.getIdeaDislikes(idea.getId()));
 
         return ideaDTO;
     }
