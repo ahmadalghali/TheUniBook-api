@@ -136,7 +136,7 @@ public class IdeaService {
         return getIdeasByDepartmentResponse;
     }
 
-    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page) {
+    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page, int loggedInUser) {
 
         HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
@@ -151,11 +151,14 @@ public class IdeaService {
 
         getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
         getIdeasByDepartmentResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
+        getIdeasByDepartmentResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
+        getIdeasByDepartmentResponse.put("DislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
+
 
         return getIdeasByDepartmentResponse;
     }
 
-    public HashMap<String, Object> sortIdeasByCategoryPaginated(int departmentId, int page, int categoryId) {
+    public HashMap<String, Object> sortIdeasByCategoryPaginated(int departmentId, int page, int categoryId, int loggedInUser) {
 
         HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
 
@@ -170,6 +173,9 @@ public class IdeaService {
 
         getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
         getIdeasByDepartmentResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
+        getIdeasByDepartmentResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
+        getIdeasByDepartmentResponse.put("DislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
+
 
         return getIdeasByDepartmentResponse;
     }

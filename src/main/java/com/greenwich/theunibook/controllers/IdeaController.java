@@ -32,11 +32,12 @@ public class IdeaController {
 
     @GetMapping("/ideas")
     public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
-                                            @RequestParam(required = false) Integer categoryId) {
+                                            @RequestParam(required = false) Integer categoryId,
+                                            @RequestParam(required = false) int loggedInUser) {
         if (categoryId == null) {
-            return ideaService.getIdeasByDepartmentPaginated(departmentId, page);
+            return ideaService.getIdeasByDepartmentPaginated(departmentId, page, loggedInUser);
         } else {
-            return ideaService.sortIdeasByCategoryPaginated(departmentId, page, categoryId);
+            return ideaService.sortIdeasByCategoryPaginated(departmentId, page, categoryId, loggedInUser);
         }
     }
 
@@ -45,17 +46,11 @@ public class IdeaController {
         return ideaService.getIdea(ideaId);
     }
 
-//    @PostMapping("/ideas")
-//    public HashMap<String, Object> addIdea(@RequestBody Idea idea) {  //HashMap<Idea, String>
-//        return ideaService.addIdea(idea);
-//    }
 
     @PostMapping("/ideas")
     public HashMap<String, Object> addIdea(@ModelAttribute Idea idea) {  //HashMap<Idea, String>
         return ideaService.addIdea(idea);
     }
-
-
 
     @GetMapping("/ideas/downloadFile")
     public ResponseEntity<Object> downloadFile(@RequestParam String documentPath) throws FileNotFoundException {
