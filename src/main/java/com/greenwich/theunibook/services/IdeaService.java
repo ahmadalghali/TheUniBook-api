@@ -7,7 +7,6 @@ import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.IdeaRepository;
 import com.greenwich.theunibook.repository.RatingRepository;
 import com.greenwich.theunibook.repository.UserRepository;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;

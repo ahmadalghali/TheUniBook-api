@@ -25,4 +25,7 @@ public interface RatingRepository extends CrudRepository<Rating, Integer> {
 
     @Query("SELECT id_idea FROM rating WHERE rating = 0 AND user_id = :userId")
     List<Integer> getDislikedIdeasByUser(int userId);
+
+
+//    List<Rating> findAllByLikedDescAnd();
 }
