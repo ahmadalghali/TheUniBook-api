@@ -41,13 +41,18 @@ public class IdeaController {
 //        }
 //    }
 
-        @GetMapping("/ideas")
+    @GetMapping("/ideas/{ideaId}")
+    public IdeaDTO getIdea(@PathVariable("ideaId") int ideaId) {
+        return ideaService.getIdea(ideaId);
+    }
+
+    @GetMapping("/ideas")
     public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
                                             @RequestParam(required = false) String categoryId,
                                             @RequestParam(required = false) int loggedInUser,
                                             @RequestParam(required = false) String sortBy) {
 
-            return ideaService.getIdeas(departmentId,page,loggedInUser,categoryId, sortBy);
+        return ideaService.getIdeas(departmentId, page, loggedInUser, categoryId, sortBy);
     }
 
 

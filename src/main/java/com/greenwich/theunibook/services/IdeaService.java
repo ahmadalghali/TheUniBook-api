@@ -207,6 +207,10 @@ public class IdeaService {
     }
 
 
+    public IdeaDTO getIdea(int ideaId) {
+        return convertToIdeaDTO(ideaRepository.findById(ideaId).get());
+    }
+
 
 //    public Resource downloadFile(String documentPath) {
 //
