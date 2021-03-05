@@ -30,20 +30,24 @@ public class IdeaController {
     IdeaService ideaService;
 
 
-    @GetMapping("/ideas")
-    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
-                                            @RequestParam(required = false) Integer categoryId,
-                                            @RequestParam(required = false) int loggedInUser) {
-        if (categoryId == null) {
-            return ideaService.getIdeasByDepartmentPaginated(departmentId, page, loggedInUser);
-        } else {
-            return ideaService.sortIdeasByCategoryPaginated(departmentId, page, categoryId, loggedInUser);
-        }
-    }
+//    @GetMapping("/ideas")
+//    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
+//                                            @RequestParam(required = false) Integer categoryId,
+//                                            @RequestParam(required = false) int loggedInUser) {
+//        if (categoryId == null) {
+//            return ideaService.getIdeasByDepartmentPaginated(departmentId, page, loggedInUser);
+//        } else {
+//            return ideaService.sortIdeasByCategoryPaginated(departmentId, page, categoryId, loggedInUser);
+//        }
+//    }
 
-    @GetMapping("/ideas/{ideaId}")
-    public IdeaDTO getIdea(@PathVariable("ideaId") int ideaId) {
-        return ideaService.getIdea(ideaId);
+        @GetMapping("/ideas")
+    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
+                                            @RequestParam(required = false) String categoryId,
+                                            @RequestParam(required = false) int loggedInUser,
+                                            @RequestParam(required = false) String sortBy) {
+
+            return ideaService.getIdeas(departmentId,page,loggedInUser,categoryId, sortBy);
     }
 
 

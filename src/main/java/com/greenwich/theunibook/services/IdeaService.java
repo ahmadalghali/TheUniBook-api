@@ -7,6 +7,7 @@ import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.IdeaRepository;
 import com.greenwich.theunibook.repository.RatingRepository;
 import com.greenwich.theunibook.repository.UserRepository;
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,11 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,9 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,13 +53,6 @@ public class IdeaService {
 
     private ModelMapper modelMapper = new ModelMapper();
 
-
-    public List<IdeaDTO> getAllIdeas() {
-
-        return ideaRepository.getIdeas().stream()
-                .map(this::convertToIdeaDTO)
-                .collect(Collectors.toList());
-    }
 
     public HashMap<String, Object> addIdea(Idea idea) {
 
@@ -93,91 +87,49 @@ public class IdeaService {
         return addIdeaResponse;
     }
 
-    public String uploadFile(MultipartFile file) {
 
-        String destinationFilename = "./uploads/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
+    public HashMap<String, Object> getIdeas(Integer departmentId, Integer page, Integer loggedInUser, String categoryId, String sortBy){
+        HashMap<String, Object> getIdeasResponse = new HashMap<>();
+        List<Idea> ideas = new ArrayList<>();
 
-        try {
-            Path path = Paths.get(destinationFilename);
-            Files.copy(file.getInputStream(),
-                    path,
-                    StandardCopyOption.REPLACE_EXISTING);
-
-            return destinationFilename;
-
-        } catch (IOException e) {
-
-            return null;
+        if(sortBy == null){
+            sortBy = "DATE";
         }
 
+        if(categoryId == null) {
+            categoryId = "%";
+        }
+            ideas = ideaRepository.getIdeas(departmentId, page, sortBy, categoryId);
+
+            List<IdeaDTO> ideaDTOS = ideas
+                    .stream()
+                    .map(this::convertToIdeaDTO)
+                    .collect(Collectors.toList());
+
+            if(sortBy.equals("most_popular")){
+                List<IdeaDTO> mostPopularIdeas = sortMostPopular(ideaDTOS);
+                getIdeasResponse.put("ideas", mostPopularIdeas);
+
+            }
+            else {
+                getIdeasResponse.put("ideas", ideaDTOS);
+            }
+
+                getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
+                getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
+                getIdeasResponse.put("DislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
+
+            return getIdeasResponse;
 
     }
 
-    public HashMap<String, Object> getIdeasByDepartment(int departmentId, int page) {
+    private List<IdeaDTO> sortMostPopular(List<IdeaDTO> ideas){
 
-        HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
+        //Collections.sort(ideas, Comparator.comparingInt(IdeaDTO ::getScore));
 
-        Pageable pageRequestWithFiveIdeas = PageRequest.of(page - 1, 5);
-
-        Page<Idea> fiveIdeasByDepartmentPage = ideaRepository.findAllByDepartmentId(departmentId, pageRequestWithFiveIdeas);
-
-//        ideaRepository.findAll()
-        List<Idea> fiveIdeasByDepartment = fiveIdeasByDepartmentPage.getContent();
-
-        List<IdeaDTO> ideaDTOS = fiveIdeasByDepartment
-                .stream()
-                .map(this::convertToIdeaDTO)
-                .collect(Collectors.toList());
-
-
-        getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
-        getIdeasByDepartmentResponse.put("page-count", calculateNumberOfPagesBasedOnListSize(ideaDTOS.size()));
-
-        return getIdeasByDepartmentResponse;
-    }
-
-    public HashMap<String, Object> getIdeasByDepartmentPaginated(int departmentId, int page, int loggedInUser) {
-
-        HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
-
-        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.getIdeasByDepartmentIdPaginated(departmentId, page);
-
-
-        List<IdeaDTO> ideaDTOS = fiveIdeasByDepartmentPaginated
-                .stream()
-                .map(this::convertToIdeaDTO)
-                .collect(Collectors.toList());
-
-
-        getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
-        getIdeasByDepartmentResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
-        getIdeasByDepartmentResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
-        getIdeasByDepartmentResponse.put("DislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
-
-
-        return getIdeasByDepartmentResponse;
-    }
-
-    public HashMap<String, Object> sortIdeasByCategoryPaginated(int departmentId, int page, int categoryId, int loggedInUser) {
-
-        HashMap<String, Object> getIdeasByDepartmentResponse = new HashMap<>();
-
-        List<Idea> fiveIdeasByDepartmentPaginated = ideaRepository.sortIdeasByCategoryPaginated(departmentId, page, categoryId);
-
-
-        List<IdeaDTO> ideaDTOS = fiveIdeasByDepartmentPaginated
-                .stream()
-                .map(this::convertToIdeaDTO)
-                .collect(Collectors.toList());
-
-
-        getIdeasByDepartmentResponse.put("ideas", ideaDTOS);
-        getIdeasByDepartmentResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
-        getIdeasByDepartmentResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
-        getIdeasByDepartmentResponse.put("DislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
-
-
-        return getIdeasByDepartmentResponse;
+       Collections.sort(ideas, (IdeaDTO idea1, IdeaDTO idea2) -> idea1.getScore()-idea2.getScore());
+        Collections.reverse(ideas);
+        return ideas;
     }
 
 
@@ -196,6 +148,12 @@ public class IdeaService {
         ideaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));
         ideaDTO.setDislikes(ratingRepository.getIdeaDislikes(idea.getId()));
 
+            int likeCount = ideaDTO.getLikes();
+            int dislikeCount = ideaDTO.getDislikes();
+
+            int score = likeCount - dislikeCount;
+            ideaDTO.setScore(score);
+
         return ideaDTO;
     }
 
@@ -210,6 +168,26 @@ public class IdeaService {
         }
 
         return numberOfPages;
+    }
+
+    public String uploadFile(MultipartFile file) {
+
+        String destinationFilename = "./uploads/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
+
+        try {
+            Path path = Paths.get(destinationFilename);
+            Files.copy(file.getInputStream(),
+                    path,
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            return destinationFilename;
+
+        } catch (IOException e) {
+
+            return null;
+        }
+
+
     }
 
     public ResponseEntity<Object> downloadFile(String documentPath) throws FileNotFoundException {
@@ -232,9 +210,6 @@ public class IdeaService {
         return responseEntity;
     }
 
-    public IdeaDTO getIdea(int ideaId) {
-        return convertToIdeaDTO(ideaRepository.findById(ideaId).get());
-    }
 
 
 //    public Resource downloadFile(String documentPath) {

@@ -32,6 +32,8 @@ public class Idea {
     @Column("is_anonymous")
     private boolean isAnonymous;
 
+    private int views;
+
     @Column("idea_document_path")
     private String documentPath;
     @Column("date")
@@ -158,6 +160,13 @@ public class Idea {
         this.document = document;
     }
 
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
 //    public int getIdeaLikes() {
 //        return ideaLikes;
 //    }

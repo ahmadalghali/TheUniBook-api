@@ -22,9 +22,25 @@ public class IdeaDTO {
 
     private int dislikes;
 
+    private int views;
 
+    private int score;
 
+    public int getScore() {
+        return score;
+    }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
 
     public int getId() {
         return id;

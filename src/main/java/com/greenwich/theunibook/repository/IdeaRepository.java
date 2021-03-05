@@ -9,47 +9,37 @@ import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
 public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer> {
 
-    @Query("SELECT * FROM ideas")
-    List<Idea> getIdeas();
 
     @Query("SELECT * FROM ideas WHERE department_id = :departmentId")
     List<Idea> getIdeasByDepartmentId(int departmentId);
 
-    Page<Idea> findAllByDepartmentId(int departmentId, Pageable pageable);
+    //Page<Idea> findAllByDepartmentId(int departmentId, Pageable pageable);
 
-    @Query("DECLARE @PageNumber AS INT\n" +
-            "DECLARE @RowsOfPage AS INT\n" +
-            "SET @PageNumber= :page\n" +
-            "SET @RowsOfPage=5\n" +
-            "SELECT * FROM ideas\n" +
+    @Query("DECLARE @sortColumn VARCHAR(MAX) = :sortBy\n" +
+            "DECLARE @PageNumber AS INT \n" +
+            "DECLARE @RowsOfPage AS INT \n" +
+            "DECLARE @CategoryId AS VARCHAR(MAX) = :categoryId\n" +
+            "SET @PageNumber = :page\n" +
+            "SET @RowsOfPage = 5 \n" +
+            "SELECT * FROM ideas \n" +
             "WHERE department_id = :departmentId\n" +
-            "ORDER BY DATE DESC\n" +
+            "AND id_category_ideas like @CategoryId\n" +
+            "ORDER BY \n" +
+            "CASE  \n" +
+            "WHEN @sortColumn = 'date' THEN date\n" +
+            "END DESC,\n" +
+            "CASE WHEN @sortColumn = 'most_viewed' THEN views \n" +
+            "END DESC\n" +
             "OFFSET (@PageNumber-1)*@RowsOfPage ROWS\n" +
             "FETCH NEXT @RowsOfPage ROWS ONLY")
-    List<Idea> getIdeasByDepartmentIdPaginated(int departmentId, int page);
-
-    @Query("DECLARE @PageNumber AS INT\n" +
-            "DECLARE @RowsOfPage AS INT\n" +
-            "SET @PageNumber= :page\n" +
-            "SET @RowsOfPage=5\n" +
-            "SELECT * FROM ideas\n" +
-            "WHERE department_id = :departmentId\n" +
-            "AND id_category_ideas = :categoryId\n" +
-            "ORDER BY DATE DESC\n" +
-            "OFFSET (@PageNumber-1)*@RowsOfPage ROWS\n" +
-            "FETCH NEXT @RowsOfPage ROWS ONLY")
-    List<Idea> sortIdeasByCategoryPaginated(int departmentId, int page, int categoryId);
+    List<Idea> getIdeas(int departmentId, int page, String sortBy, String categoryId);
 
     int countIdeasByDepartmentId(int departmentId);
 
-    @Query("UPDATE ideas SET idea_likes = idea_likes + 1 WHERE id_ideas = :ideaId")
-    List<Idea> addIdeaLike(int ideaId);
-
-    @Query("SELECT * FROM ideas WHERE department_id = :departmentId AND id_category_ideas = :categoryId")
-    List<Idea> sortIdeasByCategory (int departmentId, int categoryId);
 }
