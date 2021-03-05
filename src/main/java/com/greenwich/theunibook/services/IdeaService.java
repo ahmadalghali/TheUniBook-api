@@ -92,11 +92,8 @@ public class IdeaService {
         HashMap<String, Object> getIdeasResponse = new HashMap<>();
         List<Idea> ideas = new ArrayList<>();
 
-        if(sortBy == null){
-            sortBy = "DATE";
-        }
 
-        if(categoryId == null) {
+        if(categoryId.equals("any")) {
             categoryId = "%";
         }
             ideas = ideaRepository.getIdeas(departmentId, page, sortBy, categoryId);

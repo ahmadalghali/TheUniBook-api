@@ -32,7 +32,7 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
             "AND id_category_ideas like @CategoryId\n" +
             "ORDER BY \n" +
             "CASE  \n" +
-            "WHEN @sortColumn = 'date' THEN date\n" +
+            "WHEN @sortColumn = 'latest' THEN date\n" +
             "END DESC,\n" +
             "CASE WHEN @sortColumn = 'most_viewed' THEN views \n" +
             "END DESC\n" +
