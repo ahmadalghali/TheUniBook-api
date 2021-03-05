@@ -91,7 +91,7 @@ public class IdeaService {
     public HashMap<String, Object> getIdeas(Integer departmentId, Integer page, Integer loggedInUser, String categoryId, String sortBy){
         HashMap<String, Object> getIdeasResponse = new HashMap<>();
         List<Idea> ideas = new ArrayList<>();
-
+        //test
 
         if(categoryId.equals("any")) {
             categoryId = "%";
