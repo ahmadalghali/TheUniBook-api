@@ -55,7 +55,6 @@ public class CommentService {
 
         HashMap<String, Object> emailResponse = new HashMap<>();
 
-
         try {
             //Get the email of the author of the idea
             String ideaAuthorEmail = commentRepository.getIdeaAuthorEmail(comment.getIdeaId());

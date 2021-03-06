@@ -17,11 +17,10 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Query(value = "SELECT * FROM users")
     List<User> getAllUsers();
 
-//    @Query(value = "select id_users from ideas where id_ideas = :ideaId")
-//    int getIdeaAuthorId(int ideaId);
-//
-//    @Query("SELECT users.email\n" +
-//            "FROM users\n" +
-//            "INNER JOIN ideas ON users.id_users=ideas.id_users where id_ideas = :ideaId")
-//    String getIdeaAuthorEmail(int ideaId);
+    @Query("SELECT users.email FROM users INNER JOIN department ON users.id_users = department.id_QA_coordinator\n" +
+            "where department.id_department = :departmentId")
+    String getQACoordinatorEmail(int departmentId);
+
+    @Query(value = "SELECT user_fname FROM users where id_users = :QACoordinatorId")
+    String getQACoordinatorName(int QACoordinatorId);
 }

@@ -15,6 +15,8 @@ import java.util.List;
 @Repository
 public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer> {
 
+    @Query("SELECT * FROM ideas")
+    List<Idea> getIdeas();
 
     @Query("SELECT * FROM ideas WHERE department_id = :departmentId")
     List<Idea> getIdeasByDepartmentId(int departmentId);
@@ -42,4 +44,14 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
 
     int countIdeasByDepartmentId(int departmentId);
 
+    @Query("SELECT * FROM ideas WHERE department_id = :departmentId AND id_category_ideas = :categoryId")
+    List<Idea> sortIdeasByCategory (int departmentId, int categoryId);
+
+
+
+    @Query("SELECT id_QA_coordinator FROM department WHERE id_department = :departmentId")
+    int getQACoordinatorId(int departmentId);
+
+    @Query("SELECT idea_title FROM ideas WHERE id_ideas = :id")
+    String getIdeaTitle(int id);
 }

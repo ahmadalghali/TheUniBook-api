@@ -4,9 +4,11 @@ import com.greenwich.theunibook.dto.IdeaDTO;
 import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
+import com.greenwich.theunibook.repository.DepartmentRepository;
 import com.greenwich.theunibook.repository.IdeaRepository;
 import com.greenwich.theunibook.repository.RatingRepository;
 import com.greenwich.theunibook.repository.UserRepository;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,9 +53,22 @@ public class IdeaService {
     @Autowired
     RatingRepository ratingRepository;
 
+    @Autowired
+    DepartmentRepository departmentRepository;
+
+    @Autowired
+    private JavaMailSender sender;
+
 
     private ModelMapper modelMapper = new ModelMapper();
 
+
+    public List<IdeaDTO> getAllIdeas() {
+
+        return ideaRepository.getIdeas().stream()
+                .map(this::convertToIdeaDTO)
+                .collect(Collectors.toList());
+    }
 
     public HashMap<String, Object> addIdea(Idea idea) {
 
@@ -71,7 +88,12 @@ public class IdeaService {
                 }
             }
 
+
             Idea savedIdea = ideaRepository.save(idea);
+
+            //Email the QA Coordinator of the same department
+
+            notifyQACoordinatorByEmail(idea);
 
             addIdeaResponse.put("idea", convertToIdeaDTO(savedIdea));
             addIdeaResponse.put("message", "added");
@@ -128,6 +150,51 @@ public class IdeaService {
         return ideas;
     }
 
+
+    public HashMap<String, Object> notifyQACoordinatorByEmail(Idea idea) {
+
+        HashMap<String, Object> emailResponse = new HashMap<>();
+
+        try {
+
+
+            int QACoordinatorId = ideaRepository.getQACoordinatorId(idea.getDepartmentId());
+
+            //Check if the commenter is the same author of the idea so you don't send an email to them
+            if (idea.getUserId() == QACoordinatorId) {
+                emailResponse.put("message", "email not sent - poster is the QA Coordinator himself");
+                return emailResponse;
+            }
+
+            //Get the Email of the QA Coordinator
+            String QACoordiantorEmail = userRepository.getQACoordinatorEmail(idea.getDepartmentId());
+            String departmentName = departmentRepository.getDepartmentNameById(idea.getDepartmentId());
+            String QACoordinatorName = userRepository.getQACoordinatorName(QACoordinatorId);
+            String ideaTitle = ideaRepository.getIdeaTitle(idea.getId());
+
+            EmailValidator emailValidator = EmailValidator.getInstance();
+            if (emailValidator.isValid(QACoordiantorEmail)) {
+                SimpleMailMessage mail = new SimpleMailMessage();
+                mail.setFrom("theunibook1@gmail.com");
+                mail.setTo(QACoordiantorEmail);
+                mail.setSubject("Idea Added!");
+                mail.setText("\n\n Hi, " + QACoordinatorName + "\n\nAn idea titled: " + ideaTitle + " has been posted in the " + departmentName + " department. \n \n Click here to see it \nhttps://theunibook.netlify.app\n\n\nThanks,\nTheUniBook Team");
+                this.sender.send(mail);
+
+                emailResponse.put("message", "email sent");
+            } else {
+                emailResponse.put("message", "email invalid");
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            emailResponse.put("message", "failed to send email");
+
+        }
+
+        return emailResponse;
+    }
 
     private IdeaDTO convertToIdeaDTO(Idea idea) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
