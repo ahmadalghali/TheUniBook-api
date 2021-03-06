@@ -76,7 +76,7 @@ public class CommentService {
                 mail.setFrom("theunibook1@gmail.com");
                 mail.setTo(ideaAuthorEmail);
                 mail.setSubject("Comment Added to Post!");
-                mail.setText("\n\nYour Idea Post has received a comment" + comment.getDescription() + "\n\nclick here to check it out: \nhttps://theunibook.netlify.app\nThanks,\nTheUniBook Team");
+                mail.setText("\n\nYour Idea Post has received a comment " + comment.getDescription() + "\n\nclick here to check it out: \nhttps://theunibook.netlify.app\nThanks,\nTheUniBook Team");
                 this.sender.send(mail);
 
                 emailResponse.put("message", "email sent");
