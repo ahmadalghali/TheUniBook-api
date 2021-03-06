@@ -1,6 +1,7 @@
 package com.greenwich.theunibook.dto;
 
-import com.greenwich.theunibook.models.User;
+
+import java.time.LocalDateTime;
 
 public class IdeaDTO {
 
@@ -25,6 +26,10 @@ public class IdeaDTO {
     private int views;
 
     private int score;
+
+
+    private LocalDateTime date;
+
 
     public int getScore() {
         return score;
@@ -112,5 +117,14 @@ public class IdeaDTO {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 }

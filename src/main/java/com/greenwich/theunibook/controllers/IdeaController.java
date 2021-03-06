@@ -46,10 +46,15 @@ public class IdeaController {
         return ideaService.getIdea(ideaId);
     }
 
+    @PutMapping("/ideas/{ideaId}/incrementViews")
+    public void incrementIdeaViews(@PathVariable("ideaId") int ideaId) {
+        ideaService.incrementViews(ideaId);
+    }
+
     @GetMapping("/ideas")
     public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
                                             @RequestParam(required = false) String categoryId,
-                                            @RequestParam(required = false) int loggedInUser,
+                                            @RequestParam(required = false) Integer loggedInUser,
                                             @RequestParam(required = false) String sortBy) {
 
         return ideaService.getIdeas(departmentId, page, loggedInUser, categoryId, sortBy);

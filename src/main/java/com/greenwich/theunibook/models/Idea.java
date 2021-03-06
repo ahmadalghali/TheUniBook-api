@@ -36,8 +36,9 @@ public class Idea {
 
     @Column("idea_document_path")
     private String documentPath;
+
     @Column("date")
-    private LocalDateTime date = LocalDateTime.now();
+    private LocalDateTime date; // = LocalDateTime.now();
 
     @Transient
     @JsonIgnore
@@ -167,6 +168,8 @@ public class Idea {
     public void setViews(int views) {
         this.views = views;
     }
+
+
 //    public int getIdeaLikes() {
 //        return ideaLikes;
 //    }

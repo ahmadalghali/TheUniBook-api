@@ -1,7 +1,6 @@
 package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.dto.IdeaDTO;
-import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.DepartmentRepository;
@@ -13,18 +12,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,12 +24,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,6 +72,7 @@ public class IdeaService {
 
             idea.setStatusId(1);
             idea.setDepartmentId(ideaAuthor.getDepartmentId());
+            idea.setDate(LocalDateTime.now());
 
             //Save document if it exists
             if (idea.getDocument() != null) {
@@ -134,8 +128,8 @@ public class IdeaService {
             }
 
                 getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
-                getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
-                getIdeasResponse.put("DislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
+        getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
+        getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
 
             return getIdeasResponse;
 
@@ -211,11 +205,12 @@ public class IdeaService {
         ideaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));
         ideaDTO.setDislikes(ratingRepository.getIdeaDislikes(idea.getId()));
 
-            int likeCount = ideaDTO.getLikes();
-            int dislikeCount = ideaDTO.getDislikes();
+        int likeCount = ideaDTO.getLikes();
+        int dislikeCount = ideaDTO.getDislikes();
 
-            int score = likeCount - dislikeCount;
-            ideaDTO.setScore(score);
+        int score = likeCount - dislikeCount;
+        ideaDTO.setScore(score);
+
 
         return ideaDTO;
     }
@@ -276,6 +271,12 @@ public class IdeaService {
 
     public IdeaDTO getIdea(int ideaId) {
         return convertToIdeaDTO(ideaRepository.findById(ideaId).get());
+    }
+
+    public void incrementViews(int ideaId) {
+        Idea idea = ideaRepository.findById(ideaId).get();
+        idea.setViews(idea.getViews() + 1);
+        ideaRepository.save(idea);
     }
 
 
