@@ -287,7 +287,9 @@ public class IdeaService {
 
         List<Department> departmentsList = departmentRepository.getAll();
 
-        HashMap<String, Object> departments = new HashMap<>();
+//        HashMap<String, Object> departments = new HashMap<>();
+
+        List<Object> departments = new ArrayList<>();
 
 
         for (Department department : departmentsList) {
@@ -298,7 +300,7 @@ public class IdeaService {
             _department.put("ideaCount", ideaRepository.countIdeasByDepartmentId(department.getId()));
             _department.put("contributors", ideaRepository.getContributorsPerDepartment(department.getId()));
 
-            departments.put("department-" + department.getId(), _department);
+            departments.add(_department);
         }
 
         statistics.put("departments", departments);
