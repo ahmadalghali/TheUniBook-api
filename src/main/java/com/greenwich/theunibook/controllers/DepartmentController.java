@@ -22,4 +22,6 @@ public class DepartmentController {
         departmentRepository.findAll().forEach(departments::add);
         return departments;
     }
+
+
 }

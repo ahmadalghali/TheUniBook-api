@@ -71,4 +71,12 @@ public class IdeaController {
         return ideaService.downloadFile(documentPath);
 
     }
+
+
+    @GetMapping("/ideas/statistics")
+    public HashMap<String, Object> getStatistics() {
+        return ideaService.getStatistics();
+    }
+
+
 }

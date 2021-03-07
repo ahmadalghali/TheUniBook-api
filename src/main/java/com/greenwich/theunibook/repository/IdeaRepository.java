@@ -42,11 +42,10 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
             "FETCH NEXT @RowsOfPage ROWS ONLY")
     List<Idea> getIdeas(int departmentId, int page, String sortBy, String categoryId);
 
-    int countIdeasByDepartmentId(int departmentId);
+//    int countIdeasByDepartmentId(int departmentId);
 
     @Query("SELECT * FROM ideas WHERE department_id = :departmentId AND id_category_ideas = :categoryId")
-    List<Idea> sortIdeasByCategory (int departmentId, int categoryId);
-
+    List<Idea> sortIdeasByCategory(int departmentId, int categoryId);
 
 
     @Query("SELECT id_QA_coordinator FROM department WHERE id_department = :departmentId")
@@ -54,4 +53,22 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
 
     @Query("SELECT idea_title FROM ideas WHERE id_ideas = :id")
     String getIdeaTitle(int id);
+
+//    void getIdeaCountForDepartment(int departmentId);
+
+    @Query("SELECT COUNT(id_ideas) FROM ideas WHERE department_id = :departmentId")
+    int countIdeasByDepartmentId(int departmentId);
+
+    @Query("SELECT COUNT(DISTINCT(id_users)) FROM ideas WHERE department_id = :departmentId")
+    int getContributorsPerDepartment(int departmentId);
+
+    @Query("SELECT Count(id_ideas)\n" +
+            "FROM   ideas i \n" +
+            "WHERE  NOT EXISTS (SELECT *\n" +
+            "FROM   comments c\n" +
+            "WHERE   c.id_ideas = i.id_ideas)")
+    int getNumberOfIdeasWithNoComments();
+
+    @Query("select count(id_ideas) from ideas where is_anonymous = 1")
+    int countAllByAnonymousTrue();
 }

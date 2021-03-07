@@ -21,4 +21,7 @@ public interface CommentRepository extends CrudRepository<Comment, Integer> {
             "INNER JOIN ideas ON users.id_users=ideas.id_users where id_ideas = :ideaId")
     String getIdeaAuthorEmail(int ideaId);
 
+    @Query("SELECT COUNT(id_comment) FROM comments")
+    int numOfComments();
+
 }

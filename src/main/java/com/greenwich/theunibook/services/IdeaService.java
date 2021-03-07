@@ -1,12 +1,10 @@
 package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.dto.IdeaDTO;
+import com.greenwich.theunibook.models.Department;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
-import com.greenwich.theunibook.repository.DepartmentRepository;
-import com.greenwich.theunibook.repository.IdeaRepository;
-import com.greenwich.theunibook.repository.RatingRepository;
-import com.greenwich.theunibook.repository.UserRepository;
+import com.greenwich.theunibook.repository.*;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -48,6 +46,9 @@ public class IdeaService {
 
     @Autowired
     DepartmentRepository departmentRepository;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     @Autowired
     private JavaMailSender sender;
@@ -277,6 +278,36 @@ public class IdeaService {
         Idea idea = ideaRepository.findById(ideaId).get();
         idea.setViews(idea.getViews() + 1);
         ideaRepository.save(idea);
+    }
+
+
+    public HashMap<String, Object> getStatistics() {
+
+        HashMap<String, Object> statistics = new HashMap<>();
+
+        List<Department> departmentsList = departmentRepository.getAll();
+
+        HashMap<String, Object> departments = new HashMap<>();
+
+
+        for (Department department : departmentsList) {
+            HashMap<String, Object> _department = new HashMap<>();
+
+            _department.put("id", department.getId());
+            _department.put("name", department.getName());
+            _department.put("ideaCount", ideaRepository.countIdeasByDepartmentId(department.getId()));
+            _department.put("contributors", ideaRepository.getContributorsPerDepartment(department.getId()));
+
+            departments.put("department-" + department.getId(), _department);
+        }
+
+        statistics.put("departments", departments);
+        statistics.put("numOfIdeasWithNoComments", ideaRepository.getNumberOfIdeasWithNoComments());
+        statistics.put("numOfAnonymousIdeas", ideaRepository.countAllByAnonymousTrue());
+        statistics.put("totalNumOfComments", commentRepository.numOfComments());
+
+
+        return statistics;
     }
 
 
