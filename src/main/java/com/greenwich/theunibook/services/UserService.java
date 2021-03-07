@@ -39,14 +39,14 @@ public class UserService {
         RegisterResponse registerResponse = new RegisterResponse();
         
         String inputPassword = registerRequest.getPassword() ;
-        String generatePasswordHash = generatePasswordHash(inputPassword);
+        String hashedPassword = generatePasswordHash(inputPassword);
         
         if (userRepository.findByEmail(registerRequest.getEmail()) != null) {
             registerResponse.setMessage("user exists");
             registerResponse.setUser(null);
         } else {
             User user = new User(registerRequest.getFirstname(), registerRequest.getLastname(),
-                    registerRequest.getEmail(), generatePasswordHash, registerRequest.getDepartmentId());
+                    registerRequest.getEmail(), hashedPassword, registerRequest.getDepartmentId());
             user.setRole(UserRole.STAFF);
 //            User user = new User(registerRequest.getEmail(), registerRequest.getPassword());
 
@@ -75,13 +75,13 @@ public class UserService {
 
         boolean userExists = user != null;
 
-        String storedUserPassword = user.getPassword();
+        String dbUserHashedPassword = user.getPassword();
 
         String loginInputPassword = loginRequest.getPassword();
-        String generateLoginHash = generatePasswordHash(loginInputPassword);
+        String loginHashedPassword = generatePasswordHash(loginInputPassword);
 
         if (userExists) {
-            boolean passwordMatches = storedUserPassword.equals(generateLoginHash);
+            boolean passwordMatches = dbUserHashedPassword.equals(loginHashedPassword);
 
             if (passwordMatches) {
 
