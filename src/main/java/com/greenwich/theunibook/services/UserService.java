@@ -8,19 +8,21 @@ import com.greenwich.theunibook.repository.UserRepository;
 import com.greenwich.theunibook.web.requests.LoginRequest;
 import com.greenwich.theunibook.web.requests.RegisterRequest;
 import com.greenwich.theunibook.web.responses.RegisterResponse;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class UserService {
@@ -31,6 +33,8 @@ public class UserService {
     @Autowired
     DepartmentRepository departmentRepository;
 
+    @Autowired
+    private JavaMailSender sender;
 
     private ModelMapper modelMapper = new ModelMapper();
 
@@ -126,6 +130,75 @@ public class UserService {
             e.printStackTrace();
         }
         return generatedPassword;
+    }
+
+    public HashMap<String, Object> sendResetPasswordEmail(String email) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        HashMap<String, Object> sendGeneratedPasswordResponse = new HashMap<>();
+
+        User user = userRepository.findByEmail(email);
+        String generatedPassword = generateRandomPassword();
+        String hashPassword = generatePasswordHash(generatedPassword);
+
+        userRepository.changePasswordWithEmail(hashPassword, user.getEmail());
+
+        EmailValidator emailValidator = EmailValidator.getInstance();
+        if (emailValidator.isValid(user.getEmail())) {
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setFrom("theunibook1@gmail.com");
+            mail.setTo(user.getEmail());
+            mail.setSubject("Reset password");
+            mail.setText("\n\n Hi, " + user.getFirstname() + "\n\nThis is your new password: \n" + generatedPassword + " \nhttps://theunibook.netlify.app\n\n\nThanks,\nTheUniBook Team");
+            this.sender.send(mail);
+
+            sendGeneratedPasswordResponse.put("message", "email sent");
+        }
+        else {
+            sendGeneratedPasswordResponse.put("message", "email invalid");
+        }
+
+        return sendGeneratedPasswordResponse;
+    }
+
+    public String generateRandomPassword() {
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+        StringBuilder buffer = new StringBuilder(targetStringLength);
+        for (int i = 0; i < targetStringLength; i++) {
+            int randomLimitedInt = leftLimit + (int)
+                    (random.nextFloat() * (rightLimit - leftLimit + 1));
+            buffer.append((char) randomLimitedInt);
+        }
+        String generatedString = buffer.toString();
+
+        return generatedString;
+    }
+
+    public HashMap<String, Object> changePassword(String oldPassword, String newPassword, String confirmPassword, int userId) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        HashMap<String, Object> changePasswordResponse = new HashMap<>();
+
+        User user = userRepository.findById(userId).get();
+        String dbUserHashedPassword = user.getPassword();
+        String hashOldPassword = generatePasswordHash(oldPassword);
+        String hashNewPassword = generatePasswordHash(newPassword);
+        String hashConfirmPassword = generatePasswordHash(confirmPassword);
+
+        boolean matched = hashConfirmPassword.equals(hashNewPassword);
+        boolean samePassword = hashOldPassword.equals(hashNewPassword);
+
+        if (samePassword){
+            changePasswordResponse.put("message", "New password cannot be the same as old password");
+        }
+        else if (dbUserHashedPassword.equals(hashOldPassword) && matched){
+            userRepository.changePassword(hashNewPassword, user.getId());
+            changePasswordResponse.put("message", "Password changed");
+        }
+        else{
+            changePasswordResponse.put("message", "Password not changed");
+        }
+
+        return changePasswordResponse;
     }
 
     private UserDTO convertToUserْDTO(User user) {

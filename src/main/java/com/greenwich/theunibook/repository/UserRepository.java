@@ -1,6 +1,7 @@
 package com.greenwich.theunibook.repository;
 
 import com.greenwich.theunibook.models.User;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +15,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Query(value = "SELECT * FROM users  WHERE email = :email")
     User findByEmail(@Param("email") String email);
 
+
     @Query(value = "SELECT * FROM users")
     List<User> getAllUsers();
 
@@ -23,4 +25,12 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     @Query(value = "SELECT user_fname FROM users where id_users = :QACoordinatorId")
     String getQACoordinatorName(int QACoordinatorId);
+
+    @Modifying
+    @Query("UPDATE users SET password = :password WHERE email = :email")
+    void changePasswordWithEmail(String password, String email);
+
+    @Modifying
+    @Query("UPDATE users SET password = :password WHERE id_users = :userId")
+    void changePassword(String password, int userId);
 }
