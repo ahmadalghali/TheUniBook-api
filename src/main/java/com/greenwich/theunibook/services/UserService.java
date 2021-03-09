@@ -12,6 +12,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -20,9 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -41,10 +41,10 @@ public class UserService {
 
     public RegisterResponse register(RegisterRequest registerRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
         RegisterResponse registerResponse = new RegisterResponse();
-        
-        String inputPassword = registerRequest.getPassword() ;
+
+        String inputPassword = registerRequest.getPassword();
         String hashedPassword = generatePasswordHash(inputPassword);
-        
+
         if (userRepository.findByEmail(registerRequest.getEmail()) != null) {
             registerResponse.setMessage("user exists");
             registerResponse.setUser(null);
@@ -119,14 +119,12 @@ public class UserService {
 
             //Convert it to hexadecimal format
             StringBuilder sb = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++)
-            {
+            for (int i = 0; i < bytes.length; i++) {
                 sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
             }
             //Get complete hashed password in hex format
             generatedPassword = sb.toString();
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return generatedPassword;
@@ -151,8 +149,7 @@ public class UserService {
             this.sender.send(mail);
 
             sendGeneratedPasswordResponse.put("message", "email sent");
-        }
-        else {
+        } else {
             sendGeneratedPasswordResponse.put("message", "email invalid");
         }
 
@@ -187,18 +184,69 @@ public class UserService {
         boolean matched = hashConfirmPassword.equals(hashNewPassword);
         boolean samePassword = hashOldPassword.equals(hashNewPassword);
 
-        if (samePassword){
+        if (samePassword) {
             changePasswordResponse.put("message", "New password cannot be the same as old password");
-        }
-        else if (dbUserHashedPassword.equals(hashOldPassword) && matched){
+        } else if (dbUserHashedPassword.equals(hashOldPassword) && matched) {
             userRepository.changePassword(hashNewPassword, user.getId());
             changePasswordResponse.put("message", "Password changed");
-        }
-        else{
+        } else {
             changePasswordResponse.put("message", "Password not changed");
         }
 
         return changePasswordResponse;
+    }
+
+    public HashMap<String, Object> encourageStaffToSubmitIdeas(int departmentId) {
+        HashMap<String, Object> encourageStaffResponse = new HashMap<>();
+
+
+        List<User> allUsersInDepartment = userRepository.getAllUsersInDepartment(departmentId);
+        List<Integer> allUserIdsWithIdeasInDepartment = userRepository.getAllUserIdsInIdeas(departmentId);
+        List<User> usersWithoutIdeas = new ArrayList<>();
+
+        for (User user : allUsersInDepartment) {
+            if (user.getRole() == UserRole.COORDINATOR) {
+                continue;
+            }
+            if (!allUserIdsWithIdeasInDepartment.contains(user.getId())) {
+
+                usersWithoutIdeas.add(user);
+            }
+        }
+
+        try {
+            int QACoordinatorId = userRepository.getQACoordinatorId(departmentId);
+            String QACoordinatorName = userRepository.getQACoordinatorName(QACoordinatorId);
+
+            for (User user : usersWithoutIdeas) {
+                sendEmail(user, QACoordinatorName);
+            }
+            encourageStaffResponse.put("message", "email success");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            encourageStaffResponse.put("message", "failed to send email");
+        }
+
+        return encourageStaffResponse;
+    }
+
+    private void sendEmail(User user, String qaCoordinatorName) {
+        try {
+
+            SimpleMailMessage mail = new SimpleMailMessage();
+            mail.setTo(user.getEmail());
+            mail.setSubject("Inactivity");
+            mail.setText("\n\nHello " + user.getFirstname() + ",\n\nYou haven't been engaging recently.\nI hope everything is okay " + " \n\nhttps://theunibook.netlify.app\n\n\nKind regards,\n" + qaCoordinatorName);
+            this.sender.send(mail);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
+
     }
 
     private UserDTO convertToUserْDTO(User user) {

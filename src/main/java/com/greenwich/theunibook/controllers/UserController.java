@@ -1,6 +1,7 @@
 package com.greenwich.theunibook.controllers;
 
 import com.greenwich.theunibook.models.User;
+import com.greenwich.theunibook.repository.UserRepository;
 import com.greenwich.theunibook.services.UserService;
 import com.greenwich.theunibook.web.requests.LoginRequest;
 import com.greenwich.theunibook.web.requests.RegisterRequest;
@@ -18,6 +19,14 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserRepository userRepository;
+
+//    @GetMapping("/inactiveUserCount")
+//    public int getInactiveUserCount(@RequestParam int departmentId){
+//        return userRepository.
+//    }
 
     @PostMapping("/register")
     public RegisterResponse register(@RequestBody RegisterRequest registerRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -39,6 +48,10 @@ public class UserController {
         return userService.changePassword(oldPassword, newPassword, confirmPassword, userId);
     }
 
+    @PostMapping("/encourageStaff")
+    public HashMap<String, Object> encourageStaff(@RequestParam int departmentId ) {
+        return userService.encourageStaffToSubmitIdeas(departmentId);
+    }
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
