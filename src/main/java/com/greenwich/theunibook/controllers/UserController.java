@@ -23,10 +23,10 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-//    @GetMapping("/inactiveUserCount")
-//    public int getInactiveUserCount(@RequestParam int departmentId){
-//        return userRepository.
-//    }
+    @GetMapping("/inactiveStaffCount")
+    public int getInactiveStaffCount(@RequestParam int departmentId) {
+        return userService.getInactiveStaff(departmentId).size();
+    }
 
     @PostMapping("/register")
     public RegisterResponse register(@RequestBody RegisterRequest registerRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {

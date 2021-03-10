@@ -12,7 +12,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -21,8 +20,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 @Service
 public class UserService {
@@ -130,6 +131,7 @@ public class UserService {
         return generatedPassword;
     }
 
+
     public HashMap<String, Object> sendResetPasswordEmail(String email) throws InvalidKeySpecException, NoSuchAlgorithmException {
         HashMap<String, Object> sendGeneratedPasswordResponse = new HashMap<>();
 
@@ -196,9 +198,8 @@ public class UserService {
         return changePasswordResponse;
     }
 
-    public HashMap<String, Object> encourageStaffToSubmitIdeas(int departmentId) {
-        HashMap<String, Object> encourageStaffResponse = new HashMap<>();
 
+    public List<User> getInactiveStaff(int departmentId) {
 
         List<User> allUsersInDepartment = userRepository.getAllUsersInDepartment(departmentId);
         List<Integer> allUserIdsWithIdeasInDepartment = userRepository.getAllUserIdsInIdeas(departmentId);
@@ -209,10 +210,32 @@ public class UserService {
                 continue;
             }
             if (!allUserIdsWithIdeasInDepartment.contains(user.getId())) {
-
                 usersWithoutIdeas.add(user);
             }
         }
+
+        return usersWithoutIdeas;
+    }
+
+    public HashMap<String, Object> encourageStaffToSubmitIdeas(int departmentId) {
+        HashMap<String, Object> encourageStaffResponse = new HashMap<>();
+
+
+//        List<User> allUsersInDepartment = userRepository.getAllUsersInDepartment(departmentId);
+//        List<Integer> allUserIdsWithIdeasInDepartment = userRepository.getAllUserIdsInIdeas(departmentId);
+//        List<User> usersWithoutIdeas = new ArrayList<>();
+        List<User> usersWithoutIdeas = getInactiveStaff(departmentId);
+
+
+//        for (User user : allUsersInDepartment) {
+//            if (user.getRole() == UserRole.COORDINATOR) {
+//                continue;
+//            }
+//            if (!allUserIdsWithIdeasInDepartment.contains(user.getId())) {
+//
+//                usersWithoutIdeas.add(user);
+//            }
+//        }
 
         try {
             int QACoordinatorId = userRepository.getQACoordinatorId(departmentId);
