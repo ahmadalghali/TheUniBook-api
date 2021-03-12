@@ -10,7 +10,9 @@ public class UserDTO {
     private String email;
     private String role;
     private Department department;
+    private boolean isEnabled;
 
+    private boolean isHidden;
 
     public int getId() {
         return id;
@@ -58,5 +60,22 @@ public class UserDTO {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 }

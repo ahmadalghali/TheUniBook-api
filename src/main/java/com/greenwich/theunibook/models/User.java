@@ -21,6 +21,10 @@ public class User {
     private int departmentId;
     private UserRole role;
 
+    private boolean isEnabled;
+
+    private boolean isHidden;
+
 
     protected User() {
 
@@ -93,6 +97,22 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 
     //    public String getRole() {

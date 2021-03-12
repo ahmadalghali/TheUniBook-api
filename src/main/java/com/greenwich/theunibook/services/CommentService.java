@@ -38,6 +38,13 @@ public class CommentService {
 
         try {
 
+            User commentAuthor = userRepository.findById(comment.getAuthorId()).get();
+
+            if (!commentAuthor.isEnabled()) {
+                postCommentResponse.put("message", "user account is disabled");
+                return postCommentResponse;
+            }
+
             Comment savedComment = commentRepository.save(comment);
             postCommentResponse.put("comment", savedComment);
             postCommentResponse.put("message", "comment saved");

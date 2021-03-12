@@ -11,7 +11,15 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends CrudRepository<Comment, Integer> {
 
+//    List<Comment> getAllByIdeaIdOrderByDateDesc(int ideaId);
+
+
+    @Query("SELECT c.* FROM comments c  \n" +
+            "JOIN users u ON u.id_users = c.id_users\n" +
+            "WHERE id_ideas = :ideaId AND  u.is_hidden = 0  \n" +
+            "ORDER BY c.date DESC")
     List<Comment> getAllByIdeaIdOrderByDateDesc(int ideaId);
+
 
     @Query("select id_users from ideas where id_ideas = :ideaId")
     int getIdeaAuthorId(int ideaId);

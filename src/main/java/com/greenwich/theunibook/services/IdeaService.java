@@ -71,6 +71,11 @@ public class IdeaService {
         try {
             User ideaAuthor = userRepository.findById(idea.getUserId()).get();
 
+            if (!ideaAuthor.isEnabled()) {
+                addIdeaResponse.put("message", "user account is disabled");
+                return addIdeaResponse;
+            }
+
             idea.setStatusId(1);
             idea.setDepartmentId(ideaAuthor.getDepartmentId());
             idea.setDate(LocalDateTime.now());

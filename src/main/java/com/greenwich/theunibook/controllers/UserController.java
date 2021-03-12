@@ -1,5 +1,6 @@
 package com.greenwich.theunibook.controllers;
 
+import com.greenwich.theunibook.dto.UserDTO;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.UserRepository;
 import com.greenwich.theunibook.services.UserService;
@@ -49,19 +50,44 @@ public class UserController {
     }
 
     @PostMapping("/encourageStaff")
-    public HashMap<String, Object> encourageStaff(@RequestParam int departmentId ) {
+    public HashMap<String, Object> encourageStaff(@RequestParam int departmentId) {
         return userService.encourageStaffToSubmitIdeas(departmentId);
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/users/department/{departmentId}")
+    public List<UserDTO> getAllUsersByDepartment(@PathVariable("departmentId") int departmentId) {
+        return userService.getAllUsersByDepartment(departmentId);
+    }
 
     @GetMapping("/users/{userId}")
     public User getUser(@PathVariable("userId") int userId) {
         return userService.getUser(userId);
     }
 
+    @PutMapping("/users/{userId}/disable")
+    public HashMap<String, Object> disableAccount(@PathVariable("userId") int userId) {
+        return userService.disableAccount(userId);
+    }
+
+
+    @PutMapping("/users/{userId}/enable")
+    public HashMap<String, Object> enableAccount(@PathVariable("userId") int userId) {
+        return userService.enableAccount(userId);
+    }
+
+
+    @PutMapping("/users/{userId}/disableAndHideActivity")
+    public HashMap<String, Object> disableAccountAndHideActivity(@PathVariable("userId") int userId) {
+        return userService.disableAccountAndHideActivity(userId);
+    }
+
+    @PutMapping("/users/{userId}/enableAndUnHideActivity")
+    public HashMap<String, Object> enableAndUnHideActivity(@PathVariable("userId") int userId) {
+        return userService.enableAndUnHideActivity(userId);
+    }
 }

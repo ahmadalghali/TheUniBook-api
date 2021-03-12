@@ -281,15 +281,110 @@ public class UserService {
         return userDTO;
     }
 
-    public List<User> getAllUsers() {
+    private List<UserDTO> convertListToUserْDTO(List<User> users) {
 
-        return userRepository.getAllUsers();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(convertToUserْDTO(user));
+        }
+
+        return userDTOs;
+    }
+
+    public List<UserDTO> getAllUsers() {
+
+        return convertListToUserْDTO(userRepository.getAllUsers());
     }
 
 
     public User getUser(int userId) {
         return userRepository.findById(userId).get();
     }
+
+    public List<UserDTO> getAllUsersByDepartment(int departmentId) {
+
+        return convertListToUserْDTO(userRepository.getAllUsersInDepartment(departmentId));
+    }
+
+    public HashMap<String, Object> disableAccount(int userId) {
+        HashMap<String, Object> response = new HashMap<>();
+
+        User user = userRepository.findById(userId).get();
+        if (!user.isEnabled()) {
+            response.put("message", "user is disabled already");
+        } else {
+            response.put("message", "user account disabled");
+            user.setEnabled(false);
+            userRepository.save(user);
+        }
+        return response;
+    }
+
+    public HashMap<String, Object> enableAccount(int userId) {
+        HashMap<String, Object> response = new HashMap<>();
+
+        User user = userRepository.findById(userId).get();
+        if (user.isEnabled()) {
+            response.put("message", "user is enabled already");
+        } else {
+            response.put("message", "user account enabled");
+            user.setEnabled(true);
+            userRepository.save(user);
+        }
+
+        return response;
+    }
+
+    public HashMap<String, Object> disableAccountAndHideActivity(int userId) {
+        HashMap<String, Object> response = new HashMap<>();
+
+        try {
+            User user = userRepository.findById(userId).get();
+
+            user.setEnabled(false);
+            user.setHidden(true);
+
+            userRepository.save(user);
+
+
+            response.put("message", "user account disabled and hidden");
+            response.put("user", convertToUserْDTO(user));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("message", "failed");
+
+        }
+
+        return response;
+    }
+
+    public HashMap<String, Object> enableAndUnHideActivity(int userId) {
+        HashMap<String, Object> response = new HashMap<>();
+
+        try {
+            User user = userRepository.findById(userId).get();
+
+
+            user.setHidden(false);
+            user.setEnabled(true);
+
+            userRepository.save(user);
+
+            response.put("message", "user activity unhidden");
+            response.put("user", convertToUserْDTO(user));
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.put("message", "failed");
+
+        }
+
+        return response;
+    }
+
+
 //    public LoginResponse login(LoginRequest loginRequest) {
 //
 //        LoginResponse loginResponse = new LoginResponse();

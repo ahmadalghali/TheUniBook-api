@@ -15,7 +15,9 @@ import java.util.List;
 @Repository
 public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer> {
 
-    @Query("SELECT * FROM ideas")
+    @Query("SELECT i.* FROM ideas i\n" +
+            "JOIN users u on i.id_users = u.id_users\n" +
+            "where u.is_hidden = 0")
     List<Idea> getIdeas();
 
     @Query("SELECT * FROM ideas WHERE department_id = :departmentId")
@@ -23,22 +25,24 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
 
     //Page<Idea> findAllByDepartmentId(int departmentId, Pageable pageable);
 
-    @Query("DECLARE @sortColumn VARCHAR(MAX) = :sortBy\n" +
-            "DECLARE @PageNumber AS INT \n" +
-            "DECLARE @RowsOfPage AS INT \n" +
-            "DECLARE @CategoryId AS VARCHAR(MAX) = :categoryId\n" +
-            "SET @PageNumber = :page\n" +
-            "SET @RowsOfPage = 5 \n" +
-            "SELECT * FROM ideas \n" +
-            "WHERE department_id = :departmentId\n" +
-            "AND id_category_ideas like @CategoryId\n" +
-            "ORDER BY \n" +
-            "CASE  \n" +
-            "WHEN @sortColumn = 'latest' THEN date\n" +
-            "END DESC,\n" +
-            "CASE WHEN @sortColumn = 'most_viewed' THEN views \n" +
-            "END DESC\n" +
-            "OFFSET (@PageNumber-1)*@RowsOfPage ROWS\n" +
+    @Query("DECLARE @sortColumn VARCHAR(MAX) = :sortBy \n" +
+            "DECLARE @PageNumber AS INT  \n" +
+            "DECLARE @RowsOfPage AS INT  \n" +
+            "DECLARE @CategoryId AS VARCHAR(MAX) = :categoryId \n" +
+            "SET @PageNumber = :page \n" +
+            "SET @RowsOfPage = 5  \n" +
+            "SELECT i.* FROM ideas i\n" +
+            "JOIN users u on i.id_users = u.id_users\n" +
+            "WHERE i.department_id = :departmentId \n" +
+            "AND i.id_category_ideas like @CategoryId \n" +
+            "AND u.is_hidden = 0\n" +        // < - -  this line excludes hidden ideas
+            "ORDER BY  \n" +
+            "CASE   \n" +
+            "WHEN @sortColumn = 'latest' THEN i.date \n" +
+            "END DESC, \n" +
+            "CASE WHEN @sortColumn = 'most_viewed' THEN i.views  \n" +
+            "END DESC \n" +
+            "OFFSET (@PageNumber-1)*@RowsOfPage ROWS \n" +
             "FETCH NEXT @RowsOfPage ROWS ONLY")
     List<Idea> getIdeas(int departmentId, int page, String sortBy, String categoryId);
 
