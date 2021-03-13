@@ -22,6 +22,9 @@ public class Idea {
     @Column("id_idea_status")
     private int statusId;
 
+    @Column("is_anonymous")
+    private boolean isAnonymous;
+
     @Column("department_id")
     private int departmentId;
     @Column("idea_title")
@@ -29,8 +32,7 @@ public class Idea {
     @Column("idea_description")
     private String description;
 
-    @Column("is_anonymous")
-    private boolean isAnonymous;
+
 
     private int views;
 

@@ -15,7 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -79,4 +84,18 @@ public class IdeaController {
     }
 
 
-}
+
+
+    @GetMapping("/ideas/downloadAllIdeas")
+    public void downloadAllIdeasCSV(HttpServletResponse response) throws IOException {
+        ideaService.downloadAllIdeasCSV(response);
+
+    }
+
+    @GetMapping(value="//ideas/downloadAllDocuments")
+    public void zipFiles(HttpServletResponse response) throws IOException {
+        ideaService.downloadAllDocuments(response);
+
+    }
+
+    }

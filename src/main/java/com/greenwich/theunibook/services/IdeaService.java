@@ -6,22 +6,35 @@ import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.*;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +44,9 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class IdeaService {
@@ -178,7 +194,8 @@ public class IdeaService {
                 mail.setFrom("theunibook1@gmail.com");
                 mail.setTo(QACoordiantorEmail);
                 mail.setSubject("Idea Added!");
-                mail.setText("\n\n Hi, " + QACoordinatorName + "\n\nAn idea titled: " + ideaTitle + " has been posted in the " + departmentName + " department. \n \n Click here to see it \nhttps://theunibook.netlify.app\n\n\nThanks,\nTheUniBook Team");
+
+                mail.setText("\n\n Hi, " + QACoordinatorName + "\n\nAn idea " + '"' + ideaTitle + '"' + "has been posted in the " + departmentName + " department. \n \n Click here to see it \nhttps://theunibook.netlify.app\n\n\nThanks,\nTheUniBook Team");
                 this.sender.send(mail);
 
                 emailResponse.put("message", "email sent");
@@ -315,6 +332,59 @@ public class IdeaService {
 
 
         return statistics;
+    }
+
+
+
+    public void downloadAllIdeasCSV(HttpServletResponse response) throws IOException {
+
+        response.setContentType("text/csv");
+        String fileName = "ideas.csv";
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=" + fileName;
+
+        response.setHeader(headerKey,headerValue);
+
+        List<Idea> ideasList = ideaRepository.getIdeas();
+
+        ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+        String[] csvHeader = {"idea ID", "Idea Title", "Idea Description", "Date", "Author ID", "Category ID", "Idea Status ID", "Department ID","Anonymity", "Idea Document Path", "Number of Views"};
+        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "statusId", "departmentId","anonymous", "documentPath", "views"};
+
+        csvWriter.writeHeader(csvHeader);
+
+        for (Idea idea : ideasList) {
+            csvWriter.write(idea, nameMapping);
+        }
+
+        csvWriter.close();
+
+
+    }
+
+    public void downloadAllDocuments(HttpServletResponse response2) throws IOException {
+
+        //setting headers
+        response2.setStatus(HttpServletResponse.SC_OK);
+        response2.addHeader("Content-Disposition", "attachment; filename=\"allDocuments.zip\"");
+
+        ZipOutputStream zipOutputStream = new ZipOutputStream(response2.getOutputStream());
+
+        String directory = "./uploads";
+        File fileDir = new File(directory);
+        File[] listOfDocuments = fileDir.listFiles();
+
+        // package files
+        for (File file : listOfDocuments) {
+            //new zip entry and copying inputstream with file to zipOutputStream, after all closing streams
+            zipOutputStream.putNextEntry(new ZipEntry(file.getName()));
+            FileInputStream fileInputStream = new FileInputStream(file);
+            IOUtils.copy(fileInputStream, zipOutputStream);
+            fileInputStream.close();
+            zipOutputStream.closeEntry();
+        }
+        zipOutputStream.close();
     }
 
 
