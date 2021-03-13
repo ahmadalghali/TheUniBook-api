@@ -221,9 +221,13 @@ public class IdeaService {
         User ideaAuthor = userRepository.findById(idea.getUserId()).get();
         if (idea.isAnonymous()) {
             ideaDTO.setAuthorName("Anonymous");
+            ideaDTO.setAuthorPhoto(null);
         } else {
             ideaDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
+            ideaDTO.setAuthorPhoto(ideaAuthor.getProfileImageUrl());
+
         }
+
 
         ideaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));
         ideaDTO.setDislikes(ratingRepository.getIdeaDislikes(idea.getId()));

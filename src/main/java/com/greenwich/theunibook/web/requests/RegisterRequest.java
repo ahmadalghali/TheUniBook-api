@@ -7,6 +7,8 @@ public class RegisterRequest {
     private String firstname;
     private String lastname;
     private int departmentId;
+    private String profileImageUrl;
+
 
     public RegisterRequest(String email, String password, String firstname, String lastname, int departmentId) {
         this.email = email;
@@ -54,5 +56,13 @@ public class RegisterRequest {
 
     public void setDepartmentId(int departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

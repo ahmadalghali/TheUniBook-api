@@ -13,6 +13,8 @@ public class IdeaDTO {
 
     private String authorName;
 
+    private String authorPhoto;
+
     private int userId;
 
     private String documentPath;
@@ -126,5 +128,14 @@ public class IdeaDTO {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+
+    public String getAuthorPhoto() {
+        return authorPhoto;
+    }
+
+    public void setAuthorPhoto(String authorPhoto) {
+        this.authorPhoto = authorPhoto;
     }
 }

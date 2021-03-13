@@ -10,6 +10,7 @@ public class LoginResponse {
     private String message;
     private Department department;
 
+
     public LoginResponse() {
 
     }

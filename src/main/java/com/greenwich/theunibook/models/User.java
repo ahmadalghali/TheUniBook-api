@@ -25,6 +25,8 @@ public class User {
 
     private boolean isHidden;
 
+    private String profileImageUrl;
+
 
     protected User() {
 
@@ -113,6 +115,14 @@ public class User {
 
     public void setHidden(boolean hidden) {
         isHidden = hidden;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 
     //    public String getRole() {

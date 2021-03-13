@@ -12,6 +12,8 @@ public class UserDTO {
     private Department department;
     private boolean isEnabled;
 
+    private String profileImageUrl;
+
     private boolean isHidden;
 
     public int getId() {
@@ -77,5 +79,13 @@ public class UserDTO {
 
     public void setHidden(boolean hidden) {
         isHidden = hidden;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public RegisterResponse register(@RequestBody RegisterRequest registerRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public RegisterResponse register(@ModelAttribute RegisterRequest registerRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
         return userService.register(registerRequest);
     }
 

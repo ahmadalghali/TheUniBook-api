@@ -53,6 +53,9 @@ public class UserService {
             User user = new User(registerRequest.getFirstname(), registerRequest.getLastname(),
                     registerRequest.getEmail(), hashedPassword, registerRequest.getDepartmentId());
             user.setRole(UserRole.STAFF);
+            user.setProfileImageUrl(registerRequest.getProfileImageUrl());
+            user.setEnabled(true);
+            user.setHidden(false);
 //            User user = new User(registerRequest.getEmail(), registerRequest.getPassword());
 
             try {
