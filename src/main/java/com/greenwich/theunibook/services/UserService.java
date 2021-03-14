@@ -95,9 +95,6 @@ public class UserService {
 
             if (passwordMatches) {
 
-                LocalDateTime lastLogin = user.setLastLogin(LocalDateTime.now());
-
-                userRepository.lastLoginDate(user.getEmail(), lastLogin);
                 loginResponse.put("user", convertToUserْDTO(user));
 
                 loginResponse.put("message", "logged in");
@@ -112,6 +109,24 @@ public class UserService {
         }
 
         return loginResponse;
+    }
+
+    public HashMap<String, Object> setLoginDate(String email){
+        HashMap<String, Object> loginDateResponse = new HashMap<String, Object>();
+        User user = userRepository.findByEmail(email);
+
+        LocalDateTime lastLogin = user.setLastLogin(LocalDateTime.now());
+        String lastLoginDate = userRepository.lastLoginDate(user.getEmail(), lastLogin);
+        if (lastLoginDate != null){
+            loginDateResponse.put("message", "Success");
+
+        }
+        else{
+            loginDateResponse.put("message", "Failed");
+
+        }
+        return loginDateResponse;
+
     }
 
     private String generatePasswordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {

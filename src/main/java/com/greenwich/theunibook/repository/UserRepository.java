@@ -40,7 +40,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     @Modifying
     @Query("UPDATE users SET last_login = :lastLogin WHERE email = :email")
-    void lastLoginDate(String email, LocalDateTime lastLogin);
+    String lastLoginDate(String email, LocalDateTime lastLogin);
 
     @Query("SELECT * FROM users WHERE id_department = :departmentId")
     List<User> getAllUsersInDepartment(int departmentId);

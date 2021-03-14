@@ -94,9 +94,13 @@ public class UserDTO {
     }
 
     public String getLastLogin() {
+        if(this.lastLogin == null){
+            return null;
+        }else{
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDate = lastLogin.format(myFormatObj);
         return formattedDate;
+        }
     }
 
     public void setLastLogin(LocalDateTime lastLogin) {
