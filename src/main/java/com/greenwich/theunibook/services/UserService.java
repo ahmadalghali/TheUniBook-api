@@ -41,6 +41,19 @@ public class UserService {
 
     private ModelMapper modelMapper = new ModelMapper();
 
+    public boolean isAuthenticated(String email, String password) {
+        try {
+
+            if (passwordMatches(email, password)) {
+                return true;
+            }
+            return false;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 
     public RegisterResponse register(RegisterRequest registerRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
         RegisterResponse registerResponse = new RegisterResponse();
@@ -114,6 +127,15 @@ public class UserService {
         return loginResponse;
     }
     
+
+    public boolean passwordMatches(String email, String password) {
+        String dbPassword = userRepository.findByEmail(email).getPassword();
+        if (dbPassword.equals(password)) {
+            return true;
+        }
+        return false;
+    }
+
 
     private String generatePasswordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         String generatedPassword = null;
@@ -391,6 +413,24 @@ public class UserService {
         }
 
         return response;
+    }
+
+    public boolean isAuthorized(String email, String password, UserRole role) {
+        try {
+
+            if (isAuthenticated(email, password)) {
+                User authenticatedUser = userRepository.findByEmail(email);
+
+                if (authenticatedUser.getRole() == role) {
+                    return true;
+                }
+            }
+
+            return false;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 

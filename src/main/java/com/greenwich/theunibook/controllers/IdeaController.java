@@ -1,9 +1,12 @@
 package com.greenwich.theunibook.controllers;
 
 import com.greenwich.theunibook.dto.IdeaDTO;
+import com.greenwich.theunibook.enums.UserRole;
 import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.models.Idea;
+import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.services.IdeaService;
+import com.greenwich.theunibook.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -34,6 +37,9 @@ public class IdeaController {
     @Autowired
     IdeaService ideaService;
 
+    @Autowired
+    UserService userService;
+
 
 //    @GetMapping("/ideas")
 //    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
@@ -45,6 +51,26 @@ public class IdeaController {
 //            return ideaService.sortIdeasByCategoryPaginated(departmentId, page, categoryId, loggedInUser);
 //        }
 //    }
+
+
+    @GetMapping("/ideas/anonymous")
+    public HashMap<String, Object> getAnonymousIdeas(@RequestParam String email, @RequestParam String password) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        if (userService.isAuthorized(email, password, UserRole.ADMINISTRATOR)) {
+
+            response.put("anonymousIdeas", ideaService.getAnonymousIdeas());
+            response.put("authorized", true);
+
+        } else {
+            response.put("message", "User has no access to this data");
+            response.put("authorized", false);
+        }
+
+        return response;
+    }
+
 
     @GetMapping("/ideas/{ideaId}")
     public IdeaDTO getIdea(@PathVariable("ideaId") int ideaId) {

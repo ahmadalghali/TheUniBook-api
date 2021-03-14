@@ -1,6 +1,8 @@
 package com.greenwich.theunibook.services;
 
+import com.greenwich.theunibook.dto.AnonymousIdeaDTO;
 import com.greenwich.theunibook.dto.IdeaDTO;
+import com.greenwich.theunibook.dto.UserDTO;
 import com.greenwich.theunibook.models.Department;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
@@ -11,18 +13,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.supercsv.io.CsvBeanWriter;
@@ -34,17 +29,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -65,6 +56,9 @@ public class IdeaService {
 
     @Autowired
     CommentRepository commentRepository;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     private JavaMailSender sender;
@@ -125,43 +119,42 @@ public class IdeaService {
     }
 
 
-    public HashMap<String, Object> getIdeas(Integer departmentId, Integer page, Integer loggedInUser, String categoryId, String sortBy){
+    public HashMap<String, Object> getIdeas(Integer departmentId, Integer page, Integer loggedInUser, String categoryId, String sortBy) {
         HashMap<String, Object> getIdeasResponse = new HashMap<>();
         List<Idea> ideas = new ArrayList<>();
         //test1
 
-        if(categoryId.equals("any")) {
+        if (categoryId.equals("any")) {
             categoryId = "%";
         }
-            ideas = ideaRepository.getIdeas(departmentId, page, sortBy, categoryId);
+        ideas = ideaRepository.getIdeas(departmentId, page, sortBy, categoryId);
 
-            List<IdeaDTO> ideaDTOS = ideas
-                    .stream()
-                    .map(this::convertToIdeaDTO)
-                    .collect(Collectors.toList());
+        List<IdeaDTO> ideaDTOS = ideas
+                .stream()
+                .map(this::convertToIdeaDTO)
+                .collect(Collectors.toList());
 
-            if(sortBy.equals("most_popular")){
-                List<IdeaDTO> mostPopularIdeas = sortMostPopular(ideaDTOS);
-                getIdeasResponse.put("ideas", mostPopularIdeas);
+        if (sortBy.equals("most_popular")) {
+            List<IdeaDTO> mostPopularIdeas = sortMostPopular(ideaDTOS);
+            getIdeasResponse.put("ideas", mostPopularIdeas);
 
-            }
-            else {
-                getIdeasResponse.put("ideas", ideaDTOS);
-            }
+        } else {
+            getIdeasResponse.put("ideas", ideaDTOS);
+        }
 
-                getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
+        getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
         getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
         getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
 
-            return getIdeasResponse;
+        return getIdeasResponse;
 
     }
 
-    private List<IdeaDTO> sortMostPopular(List<IdeaDTO> ideas){
+    private List<IdeaDTO> sortMostPopular(List<IdeaDTO> ideas) {
 
         //Collections.sort(ideas, Comparator.comparingInt(IdeaDTO ::getScore));
 
-       Collections.sort(ideas, (IdeaDTO idea1, IdeaDTO idea2) -> idea1.getScore()-idea2.getScore());
+        Collections.sort(ideas, (IdeaDTO idea1, IdeaDTO idea2) -> idea1.getScore() - idea2.getScore());
         Collections.reverse(ideas);
         return ideas;
     }
@@ -242,6 +235,23 @@ public class IdeaService {
         return ideaDTO;
     }
 
+    private AnonymousIdeaDTO convertToAnonymousIdeaDTO(Idea idea) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+
+        AnonymousIdeaDTO anonymousIdeaDTO = modelMapper.map(idea, AnonymousIdeaDTO.class);
+
+
+        User ideaAuthor = userRepository.findById(idea.getUserId()).get();
+
+        anonymousIdeaDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
+
+        anonymousIdeaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));
+        anonymousIdeaDTO.setDislikes(ratingRepository.getIdeaDislikes(idea.getId()));
+        anonymousIdeaDTO.setEmail(ideaAuthor.getEmail());
+        anonymousIdeaDTO.setAuthorPhoto(ideaAuthor.getProfileImageUrl());
+
+        return anonymousIdeaDTO;
+    }
 
     public int calculateNumberOfPagesBasedOnListSize(int itemCount) {
 
@@ -339,7 +349,6 @@ public class IdeaService {
     }
 
 
-
     public void downloadAllIdeasCSV(HttpServletResponse response) throws IOException {
 
         response.setContentType("text/csv");
@@ -348,13 +357,13 @@ public class IdeaService {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=" + fileName;
 
-        response.setHeader(headerKey,headerValue);
+        response.setHeader(headerKey, headerValue);
 
         List<Idea> ideasList = ideaRepository.getIdeas();
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
-        String[] csvHeader = {"idea ID", "Idea Title", "Idea Description", "Date", "Author ID", "Category ID", "Idea Status ID", "Department ID","Anonymity", "Idea Document Path", "Number of Views"};
-        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "statusId", "departmentId","anonymous", "documentPath", "views"};
+        String[] csvHeader = {"idea ID", "Idea Title", "Idea Description", "Date", "Author ID", "Category ID", "Idea Status ID", "Department ID", "Anonymity", "Idea Document Path", "Number of Views"};
+        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "statusId", "departmentId", "anonymous", "documentPath", "views"};
 
         csvWriter.writeHeader(csvHeader);
 
@@ -391,6 +400,20 @@ public class IdeaService {
         zipOutputStream.close();
     }
 
+    public List<AnonymousIdeaDTO> getAnonymousIdeas() {
+
+        return convertListToUserْDTO(ideaRepository.getAnonymousIdeas());
+    }
+
+    private List<AnonymousIdeaDTO> convertListToUserْDTO(List<Idea> ideas) {
+
+        List<AnonymousIdeaDTO> anonymousIdeaDTOS = new ArrayList<>();
+        for (Idea idea : ideas) {
+            anonymousIdeaDTOS.add(convertToAnonymousIdeaDTO(idea));
+        }
+
+        return anonymousIdeaDTOS;
+    }
 
 //    public Resource downloadFile(String documentPath) {
 //

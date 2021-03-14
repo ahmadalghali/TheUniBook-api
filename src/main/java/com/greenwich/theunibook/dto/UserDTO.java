@@ -12,6 +12,7 @@ public class UserDTO {
     private String lastname;
     private String email;
     private String role;
+    private String password;
     private Department department;
     private boolean isEnabled;
 
@@ -91,6 +92,14 @@ public class UserDTO {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getLastLogin() {

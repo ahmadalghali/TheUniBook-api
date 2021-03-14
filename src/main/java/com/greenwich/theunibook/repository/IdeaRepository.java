@@ -15,6 +15,9 @@ import java.util.List;
 @Repository
 public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer> {
 
+    @Query("select * from ideas where is_anonymous = 1")
+    List<Idea> getAnonymousIdeas();
+
     @Query("SELECT i.* FROM ideas i\n" +
             "JOIN users u on i.id_users = u.id_users\n" +
             "where u.is_hidden = 0")
