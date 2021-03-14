@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 @Table("users")
 public class User {
 
@@ -26,6 +28,9 @@ public class User {
     private boolean isHidden;
 
     private String profileImageUrl;
+
+    @Column("last_login")
+    private LocalDateTime lastLogin;
 
 
     protected User() {
@@ -123,6 +128,15 @@ public class User {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public LocalDateTime getLastLogin() {
+        return lastLogin;
+    }
+
+    public LocalDateTime setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
+        return lastLogin;
     }
 
     //    public String getRole() {

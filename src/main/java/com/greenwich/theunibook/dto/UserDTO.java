@@ -2,6 +2,9 @@ package com.greenwich.theunibook.dto;
 
 import com.greenwich.theunibook.models.Department;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class UserDTO {
 
     private int id;
@@ -13,6 +16,7 @@ public class UserDTO {
     private boolean isEnabled;
 
     private String profileImageUrl;
+    private LocalDateTime lastLogin;
 
     private boolean isHidden;
 
@@ -87,5 +91,15 @@ public class UserDTO {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public String getLastLogin() {
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = lastLogin.format(myFormatObj);
+        return formattedDate;
+    }
+
+    public void setLastLogin(LocalDateTime lastLogin) {
+        this.lastLogin = lastLogin;
     }
 }

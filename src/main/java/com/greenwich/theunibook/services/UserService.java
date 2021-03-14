@@ -20,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +95,9 @@ public class UserService {
 
             if (passwordMatches) {
 
+                LocalDateTime lastLogin = user.setLastLogin(LocalDateTime.now());
+
+                userRepository.lastLoginDate(user.getEmail(), lastLogin);
                 loginResponse.put("user", convertToUserْDTO(user));
 
                 loginResponse.put("message", "logged in");

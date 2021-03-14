@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -37,15 +38,14 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Query("UPDATE users SET password = :password WHERE id_users = :userId")
     void changePassword(String password, int userId);
 
+    @Modifying
+    @Query("UPDATE users SET last_login = :lastLogin WHERE email = :email")
+    void lastLoginDate(String email, LocalDateTime lastLogin);
+
     @Query("SELECT * FROM users WHERE id_department = :departmentId")
     List<User> getAllUsersInDepartment(int departmentId);
 
     @Query("SELECT DISTINCT(id_users) FROM ideas WHERE department_id = :departmentId")
     List<Integer> getAllUserIdsInIdeas(int departmentId);
 
-    @Query("SELECT * FROM users WHERE id_users = :userId")
-    User getUserById(int userId);
-
-//    @Query("SELECT COUNT ")
-//    int
 }
