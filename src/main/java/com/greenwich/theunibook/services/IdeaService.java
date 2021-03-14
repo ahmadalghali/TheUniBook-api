@@ -58,6 +58,9 @@ public class IdeaService {
     CommentRepository commentRepository;
 
     @Autowired
+    ReportRepository reportRepository;
+
+    @Autowired
     UserService userService;
 
     @Autowired
@@ -145,6 +148,7 @@ public class IdeaService {
         getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
         getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
         getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
+        getIdeasResponse.put("reportedIdeasByUser", reportRepository.getReportedIdeasByUser(loggedInUser));
 
         return getIdeasResponse;
 
