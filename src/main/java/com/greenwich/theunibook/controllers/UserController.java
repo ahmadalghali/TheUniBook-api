@@ -54,12 +54,6 @@ public class UserController {
         return userService.encourageStaffToSubmitIdeas(departmentId);
     }
 
-    @PostMapping("/setLastLoginDate")
-    public HashMap<String, Object> setLastLoginDate(@RequestParam String email){
-        return userService.setLoginDate(email);
-
-    }
-
     @GetMapping("/users")
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
