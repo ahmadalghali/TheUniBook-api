@@ -54,6 +54,23 @@ public class UserService {
         }
     }
 
+    public boolean isAuthorized(String email, String password, UserRole role) {
+        try {
+
+            if (isAuthenticated(email, password)) {
+                User authenticatedUser = userRepository.findByEmail(email);
+
+                if (authenticatedUser.getRole() == role) {
+                    return true;
+                }
+            }
+
+            return false;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public RegisterResponse register(RegisterRequest registerRequest) throws NoSuchAlgorithmException, InvalidKeySpecException {
         RegisterResponse registerResponse = new RegisterResponse();
@@ -204,6 +221,7 @@ public class UserService {
 
         return generatedString;
     }
+
 
     public HashMap<String, Object> changePassword(String oldPassword, String newPassword, String confirmPassword, int userId) throws InvalidKeySpecException, NoSuchAlgorithmException {
         HashMap<String, Object> changePasswordResponse = new HashMap<>();
@@ -415,23 +433,6 @@ public class UserService {
         return response;
     }
 
-    public boolean isAuthorized(String email, String password, UserRole role) {
-        try {
-
-            if (isAuthenticated(email, password)) {
-                User authenticatedUser = userRepository.findByEmail(email);
-
-                if (authenticatedUser.getRole() == role) {
-                    return true;
-                }
-            }
-
-            return false;
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
 
 //    public LoginResponse login(LoginRequest loginRequest) {

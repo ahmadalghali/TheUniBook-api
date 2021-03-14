@@ -19,6 +19,7 @@ public class UserDTO {
     private String profileImageUrl;
     private LocalDateTime lastLogin;
 
+
     private boolean isHidden;
 
     public int getId() {
