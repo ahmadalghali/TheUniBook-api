@@ -419,10 +419,13 @@ public class UserService {
         return response;
     }
 
-    public List<UserDTO> getMostActiveUsers() {
+    public HashMap<String, Object> getMostActiveUsers() {
+        HashMap<String, Object> mostActiveUsersResponse = new HashMap<>();
         List<User> mostActiveUsers = userRepository.getMostActiveUsers();
+        convertListToUserْDTO(mostActiveUsers);
 
-        return convertListToUserْDTO(mostActiveUsers);
+        mostActiveUsersResponse.put("users", mostActiveUsers);
+        return mostActiveUsersResponse;
 
     }
 

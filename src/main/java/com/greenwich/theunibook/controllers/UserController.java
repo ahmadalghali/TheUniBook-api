@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @GetMapping("/mostActiveUsers")
-    public List<UserDTO> getMostActiveUsers(){
+    public HashMap<String, Object> getMostActiveUsers(){
         return userService.getMostActiveUsers();
     }
 
