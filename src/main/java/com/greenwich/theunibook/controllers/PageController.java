@@ -18,7 +18,7 @@ public class PageController {
     PageService pageService;
 
     @GetMapping("/mostViewedPages")
-    public List<Pages> getMostViewedPages(){
+    public HashMap<String, Object> getMostViewedPages(){
         return pageService.getMostViewedPages();
     }
 

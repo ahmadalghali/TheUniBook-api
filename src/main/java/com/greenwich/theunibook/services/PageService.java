@@ -14,9 +14,12 @@ public class PageService {
     @Autowired
     PageRepository pageRepository;
 
-    public List<Pages> getMostViewedPages(){
+    public HashMap<String, Object> getMostViewedPages(){
+        HashMap<String, Object> mostViewedPagesResponse = new HashMap<>();
         List<Pages> mostViewedPages = pageRepository.getAllPagesByViews();
-        return mostViewedPages;
+
+        mostViewedPagesResponse.put("pages", mostViewedPages);
+        return mostViewedPagesResponse;
     }
 
     public HashMap<String, Object> addPageView(int pageId){
