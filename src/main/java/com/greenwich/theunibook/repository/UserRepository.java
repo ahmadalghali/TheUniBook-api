@@ -1,5 +1,6 @@
 package com.greenwich.theunibook.repository;
 
+import com.greenwich.theunibook.dto.UserDTO;
 import com.greenwich.theunibook.models.User;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
@@ -48,4 +49,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Query("SELECT DISTINCT(id_users) FROM ideas WHERE department_id = :departmentId")
     List<Integer> getAllUserIdsInIdeas(int departmentId);
 
+    @Query("SELECT TOP 10 * FROM users ORDER BY score DESC")
+    List<User> getMostActiveUsers();
 }

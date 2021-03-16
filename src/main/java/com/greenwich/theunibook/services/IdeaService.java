@@ -103,7 +103,8 @@ public class IdeaService {
 
 
             Idea savedIdea = ideaRepository.save(idea);
-
+            ideaAuthor.setScore(ideaAuthor.getScore() + 1);
+            userRepository.save(ideaAuthor);
             //Email the QA Coordinator of the same department
 
             notifyQACoordinatorByEmail(idea);

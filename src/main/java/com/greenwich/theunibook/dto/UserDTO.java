@@ -21,6 +21,7 @@ public class UserDTO {
 
 
     private boolean isHidden;
+    private int score;
 
     public int getId() {
         return id;
@@ -115,5 +116,13 @@ public class UserDTO {
 
     public void setLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

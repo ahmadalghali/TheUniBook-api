@@ -40,19 +40,6 @@ public class IdeaController {
     @Autowired
     UserService userService;
 
-
-//    @GetMapping("/ideas")
-//    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
-//                                            @RequestParam(required = false) Integer categoryId,
-//                                            @RequestParam(required = false) int loggedInUser) {
-//        if (categoryId == null) {
-//            return ideaService.getIdeasByDepartmentPaginated(departmentId, page, loggedInUser);
-//        } else {
-//            return ideaService.sortIdeasByCategoryPaginated(departmentId, page, categoryId, loggedInUser);
-//        }
-//    }
-
-
     @GetMapping("/ideas/anonymous")
     public HashMap<String, Object> getAnonymousIdeas(@RequestParam String email, @RequestParam String password) {
 

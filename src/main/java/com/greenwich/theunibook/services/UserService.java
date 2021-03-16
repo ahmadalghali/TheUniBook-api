@@ -269,22 +269,8 @@ public class UserService {
     public HashMap<String, Object> encourageStaffToSubmitIdeas(int departmentId) {
         HashMap<String, Object> encourageStaffResponse = new HashMap<>();
 
-
-//        List<User> allUsersInDepartment = userRepository.getAllUsersInDepartment(departmentId);
-//        List<Integer> allUserIdsWithIdeasInDepartment = userRepository.getAllUserIdsInIdeas(departmentId);
-//        List<User> usersWithoutIdeas = new ArrayList<>();
         List<User> usersWithoutIdeas = getInactiveStaff(departmentId);
 
-
-//        for (User user : allUsersInDepartment) {
-//            if (user.getRole() == UserRole.COORDINATOR) {
-//                continue;
-//            }
-//            if (!allUserIdsWithIdeasInDepartment.contains(user.getId())) {
-//
-//                usersWithoutIdeas.add(user);
-//            }
-//        }
 
         try {
             int QACoordinatorId = userRepository.getQACoordinatorId(departmentId);
@@ -433,6 +419,12 @@ public class UserService {
         return response;
     }
 
+    public List<UserDTO> getMostActiveUsers() {
+        List<User> mostActiveUsers = userRepository.getMostActiveUsers();
+
+        return convertListToUserْDTO(mostActiveUsers);
+
+    }
 
 
 //    public LoginResponse login(LoginRequest loginRequest) {

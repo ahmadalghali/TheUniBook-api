@@ -46,6 +46,9 @@ public class CommentService {
             }
 
             Comment savedComment = commentRepository.save(comment);
+            commentAuthor.setScore(commentAuthor.getScore() + 1);
+            userRepository.save(commentAuthor);
+
             postCommentResponse.put("comment", savedComment);
             postCommentResponse.put("message", "comment saved");
 

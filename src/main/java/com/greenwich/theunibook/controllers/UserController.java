@@ -64,6 +64,11 @@ public class UserController {
         return userService.getAllUsersByDepartment(departmentId);
     }
 
+    @GetMapping("/mostActiveUsers")
+    public List<UserDTO> getMostActiveUsers(){
+        return userService.getMostActiveUsers();
+    }
+
     @GetMapping("/users/{userId}")
     public User getUser(@PathVariable("userId") int userId) {
         return userService.getUser(userId);

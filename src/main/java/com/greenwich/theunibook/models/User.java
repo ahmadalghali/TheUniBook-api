@@ -32,6 +32,7 @@ public class User {
     @Column("last_login")
     private LocalDateTime lastLogin;
 
+    private int score;
 
     protected User() {
 
@@ -137,6 +138,14 @@ public class User {
     public LocalDateTime setLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
         return lastLogin;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 
     //    public String getRole() {
