@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -143,7 +144,7 @@ public class UserService {
 
         return loginResponse;
     }
-    
+
 
     public boolean passwordMatches(String email, String password) {
         String dbPassword = userRepository.findByEmail(email).getPassword();
@@ -269,8 +270,22 @@ public class UserService {
     public HashMap<String, Object> encourageStaffToSubmitIdeas(int departmentId) {
         HashMap<String, Object> encourageStaffResponse = new HashMap<>();
 
+
+//        List<User> allUsersInDepartment = userRepository.getAllUsersInDepartment(departmentId);
+//        List<Integer> allUserIdsWithIdeasInDepartment = userRepository.getAllUserIdsInIdeas(departmentId);
+//        List<User> usersWithoutIdeas = new ArrayList<>();
         List<User> usersWithoutIdeas = getInactiveStaff(departmentId);
 
+
+//        for (User user : allUsersInDepartment) {
+//            if (user.getRole() == UserRole.COORDINATOR) {
+//                continue;
+//            }
+//            if (!allUserIdsWithIdeasInDepartment.contains(user.getId())) {
+//
+//                usersWithoutIdeas.add(user);
+//            }
+//        }
 
         try {
             int QACoordinatorId = userRepository.getQACoordinatorId(departmentId);
@@ -423,6 +438,8 @@ public class UserService {
         List<User> mostActiveUsers = userRepository.getMostActiveUsers();
         return convertListToUserْDTO(mostActiveUsers);
     }
+
+
 
 
 //    public LoginResponse login(LoginRequest loginRequest) {

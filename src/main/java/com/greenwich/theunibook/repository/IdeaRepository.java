@@ -5,10 +5,13 @@ import com.greenwich.theunibook.models.Idea;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,4 +73,18 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
 
     @Query("select count(id_ideas) from ideas where is_anonymous = 1")
     int countAllByAnonymousTrue();
+
+    @Modifying
+    @Query("INSERT INTO idea_closure_date (from_date, to_date) VALUES (:fromDate , :toDate) ")
+    void setIdeaClosureDate(LocalDate fromDate, LocalDate toDate);
+
+    @Modifying
+    @Query("DELETE FROM idea_closure_date")
+    void deleteExistingDates();
+
+    @Query("SELECT TOP 1 from_date FROM idea_closure_date")
+    String getFromDate();
+
+    @Query("SELECT TOP 1 to_date FROM idea_closure_date")
+    String getToDate();
 }

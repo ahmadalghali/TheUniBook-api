@@ -8,28 +8,16 @@ import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.services.IdeaService;
 import com.greenwich.theunibook.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.supercsv.io.CsvBeanWriter;
-import org.supercsv.io.ICsvBeanWriter;
-import org.supercsv.prefs.CsvPreference;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 public class IdeaController {
@@ -105,10 +93,20 @@ public class IdeaController {
 
     }
 
-    @GetMapping(value="//ideas/downloadAllDocuments")
+    @GetMapping(value = "/ideas/downloadAllDocuments")
     public void zipFiles(HttpServletResponse response) throws IOException {
         ideaService.downloadAllDocuments(response);
 
     }
 
+    @PostMapping("/ideas/setIdeaClosureDate")
+    public String setIdeaClosureDate(@RequestParam(value="fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                     @RequestParam(value="toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+
+        return ideaService.setIdeaClosureDate(fromDate, toDate);
     }
+
+
+
+
+}

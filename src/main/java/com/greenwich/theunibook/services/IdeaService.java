@@ -16,6 +16,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.object.SqlCall;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ import org.supercsv.prefs.CsvPreference;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,45 +85,58 @@ public class IdeaService {
 
         HashMap<String, Object> addIdeaResponse = new HashMap();
 
-        try {
-            User ideaAuthor = userRepository.findById(idea.getUserId()).get();
+        //Checking if today's date is between the allowed period for adding ideas
+        LocalDate fromDateStr = LocalDate.parse(ideaRepository.getFromDate());
+        LocalDate toDateStr = LocalDate.parse(ideaRepository.getToDate());
+        LocalDate dateToday = LocalDate.now();
+        if (dateToday.isAfter(fromDateStr) && dateToday.isBefore(toDateStr)) {
 
-            if (!ideaAuthor.isEnabled()) {
-                addIdeaResponse.put("message", "user account is disabled");
-                return addIdeaResponse;
-            }
+            try {
+                User ideaAuthor = userRepository.findById(idea.getUserId()).get();
 
-            idea.setStatusId(1);
-            idea.setDepartmentId(ideaAuthor.getDepartmentId());
-            idea.setDate(LocalDateTime.now());
-
-            //Save document if it exists
-            if (idea.getDocument() != null) {
-                String documentPath = uploadFile(idea.getDocument());
-                if (documentPath != null) {
-                    idea.setDocumentPath(documentPath);
+                if (!ideaAuthor.isEnabled()) {
+                    addIdeaResponse.put("message", "user account is disabled");
+                    return addIdeaResponse;
                 }
-            }
+
+                idea.setStatusId(1);
+                idea.setDepartmentId(ideaAuthor.getDepartmentId());
+                idea.setDate(LocalDateTime.now());
+
+                //Save document if it exists
+                if (idea.getDocument() != null) {
+                    String documentPath = uploadFile(idea.getDocument());
+                    if (documentPath != null) {
+                        idea.setDocumentPath(documentPath);
+                    }
+                }
 
 
             Idea savedIdea = ideaRepository.save(idea);
             ideaAuthor.setScore(ideaAuthor.getScore() + 1);
             userRepository.save(ideaAuthor);
             //Email the QA Coordinator of the same department
+                Idea savedIdea = ideaRepository.save(idea);
 
-            notifyQACoordinatorByEmail(idea);
+                //Email the QA Coordinator of the same department
 
-            addIdeaResponse.put("idea", convertToIdeaDTO(savedIdea));
-            addIdeaResponse.put("message", "added");
+                notifyQACoordinatorByEmail(idea);
+
+                addIdeaResponse.put("idea", convertToIdeaDTO(savedIdea));
+                addIdeaResponse.put("message", "added");
 //            addIdeaResponse.put("ideaAuthor", ideaAuthor);
 
-        } catch (Exception e) {
+            } catch (Exception e) {
 
-            e.printStackTrace();
-            addIdeaResponse.put("data", idea);
-            addIdeaResponse.put("message", "failed");
+                e.printStackTrace();
+                addIdeaResponse.put("data", idea);
+                addIdeaResponse.put("message", "failed");
+            }
+        } else {
+            addIdeaResponse.put("message","Outside the allowed date period for upload");
         }
         return addIdeaResponse;
+
     }
 
 
@@ -193,7 +210,7 @@ public class IdeaService {
                 mail.setTo(QACoordiantorEmail);
                 mail.setSubject("Idea Added!");
 
-                mail.setText("\n\n Hi, " + QACoordinatorName + "\n\nAn idea " + '"' + ideaTitle + '"' + "has been posted in the " + departmentName + " department. \n \n Click here to see it \nhttps://theunibook.netlify.app\n\n\nThanks,\nTheUniBook Team");
+                mail.setText("\nHi, " + QACoordinatorName + "\n\n\nAn idea " + '"' + ideaTitle + '"' + "has been posted in the " + departmentName + " department. \n \n Click here to see it: \nhttps://www.theunibook.co.uk\n\n\nThanks,\nTheUniBook Team");
                 this.sender.send(mail);
 
                 emailResponse.put("message", "email sent");
@@ -403,6 +420,22 @@ public class IdeaService {
             zipOutputStream.closeEntry();
         }
         zipOutputStream.close();
+    }
+
+    public String setIdeaClosureDate(LocalDate fromDate, LocalDate toDate) {
+
+//        LocalDate fromDate = LocalDate.parse(fromDateStr);
+//        LocalDate toDate = LocalDate.parse(fromDateStr);
+        //Checking if the fromDate date is before the toDate date
+        if (fromDate.isBefore(toDate)) {
+            ideaRepository.deleteExistingDates();
+            ideaRepository.setIdeaClosureDate(fromDate, toDate);
+            return "Successfully Saved";
+        } else {
+            return "toDate is before fromDate, invalid date period.";
+        }
+
+
     }
 
     public List<AnonymousIdeaDTO> getAnonymousIdeas() {

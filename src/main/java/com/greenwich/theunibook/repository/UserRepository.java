@@ -17,7 +17,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     @Query(value = "SELECT * FROM users  WHERE email = :email")
     User findByEmail(@Param("email") String email);
 
-
     @Query(value = "SELECT * FROM users")
     List<User> getAllUsers();
 
