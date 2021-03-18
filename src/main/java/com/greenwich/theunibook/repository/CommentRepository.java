@@ -32,4 +32,6 @@ public interface CommentRepository extends CrudRepository<Comment, Integer> {
     @Query("SELECT COUNT(id_comment) FROM comments")
     int numOfComments();
 
+    @Query("SELECT users.user_fname FROM users WHERE users.id_users = :ideaAuthorId")
+    String getAuthorName(int ideaAuthorId);
 }
