@@ -29,6 +29,8 @@ public class IdeaDTO {
 
     private int score;
 
+    private int commentCount;
+
 
     private LocalDateTime date;
 
@@ -137,5 +139,13 @@ public class IdeaDTO {
 
     public void setAuthorPhoto(String authorPhoto) {
         this.authorPhoto = authorPhoto;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

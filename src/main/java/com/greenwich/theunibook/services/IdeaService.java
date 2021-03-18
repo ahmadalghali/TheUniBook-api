@@ -250,6 +250,8 @@ public class IdeaService {
         int score = likeCount - dislikeCount;
         ideaDTO.setScore(score);
 
+        ideaDTO.setCommentCount(commentRepository.countByIdeaId(idea.getId()));
+
 
         return ideaDTO;
     }
