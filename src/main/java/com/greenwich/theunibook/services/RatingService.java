@@ -96,6 +96,8 @@ public class RatingService {
 
             }
 
+            updateIdeaScore(ideaId);
+
         } catch (Exception e) {
             e.printStackTrace();
             addRatingResponse.put("message", "failed");
