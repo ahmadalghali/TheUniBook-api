@@ -105,6 +105,11 @@ public class IdeaController {
         return "unauthorised access";
     }
 
+    @GetMapping("/ideas/closureDate")
+    public String getClosureDate() {
+        return ideaService.getClosureDate();
+    }
+
 //    @PostMapping("/ideas/setIdeaClosureDate")
 ////    public String setIdeaClosureDate(@RequestParam(value="fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
 ////                                     @RequestParam(value="toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {

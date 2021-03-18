@@ -263,7 +263,6 @@ public class IdeaService {
         User ideaAuthor = userRepository.findById(idea.getUserId()).get();
 
         anonymousIdeaDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
-
         anonymousIdeaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));
         anonymousIdeaDTO.setDislikes(ratingRepository.getIdeaDislikes(idea.getId()));
         anonymousIdeaDTO.setEmail(ideaAuthor.getEmail());
@@ -450,6 +449,10 @@ public class IdeaService {
         }
 
         return anonymousIdeaDTOS;
+    }
+
+    public String getClosureDate() {
+        return ideaRepository.getClosureDate();
     }
 
 //    public Resource downloadFile(String documentPath) {
