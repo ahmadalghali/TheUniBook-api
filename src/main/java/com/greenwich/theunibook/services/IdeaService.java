@@ -2,7 +2,6 @@ package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.dto.AnonymousIdeaDTO;
 import com.greenwich.theunibook.dto.IdeaDTO;
-import com.greenwich.theunibook.dto.UserDTO;
 import com.greenwich.theunibook.models.Department;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
@@ -16,7 +15,6 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.object.SqlCall;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -86,10 +84,9 @@ public class IdeaService {
         HashMap<String, Object> addIdeaResponse = new HashMap();
 
         //Checking if today's date is between the allowed period for adding ideas
-        LocalDate fromDateStr = LocalDate.parse(ideaRepository.getFromDate());
-        LocalDate toDateStr = LocalDate.parse(ideaRepository.getToDate());
+        LocalDate closureDateStr = LocalDate.parse(ideaRepository.getClosureDate());
         LocalDate dateToday = LocalDate.now();
-        if (dateToday.isAfter(fromDateStr) && dateToday.isBefore(toDateStr)) {
+        if (dateToday.isBefore(closureDateStr)) {
 
             try {
                 User ideaAuthor = userRepository.findById(idea.getUserId()).get();
@@ -112,7 +109,7 @@ public class IdeaService {
                 }
 
 
-            Idea savedIdea = ideaRepository.save(idea);
+
             ideaAuthor.setScore(ideaAuthor.getScore() + 1);
             userRepository.save(ideaAuthor);
             //Email the QA Coordinator of the same department
@@ -133,7 +130,7 @@ public class IdeaService {
                 addIdeaResponse.put("message", "failed");
             }
         } else {
-            addIdeaResponse.put("message","Outside the allowed date period for upload");
+            addIdeaResponse.put("message","idea submission period closed");
         }
         return addIdeaResponse;
 
@@ -422,17 +419,19 @@ public class IdeaService {
         zipOutputStream.close();
     }
 
-    public String setIdeaClosureDate(LocalDate fromDate, LocalDate toDate) {
+    public String setIdeaClosureDate(LocalDate closureDate) {
+
 
 //        LocalDate fromDate = LocalDate.parse(fromDateStr);
 //        LocalDate toDate = LocalDate.parse(fromDateStr);
         //Checking if the fromDate date is before the toDate date
-        if (fromDate.isBefore(toDate)) {
+        LocalDate dateNow = LocalDate.now();
+        if (dateNow.isBefore(closureDate)) {
             ideaRepository.deleteExistingDates();
-            ideaRepository.setIdeaClosureDate(fromDate, toDate);
+            ideaRepository.setIdeaClosureDate(closureDate);
             return "Successfully Saved";
         } else {
-            return "toDate is before fromDate, invalid date period.";
+            return "date is before closure date";
         }
 
 

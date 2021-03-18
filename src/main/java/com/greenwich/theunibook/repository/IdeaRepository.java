@@ -75,16 +75,13 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
     int countAllByAnonymousTrue();
 
     @Modifying
-    @Query("INSERT INTO idea_closure_date (from_date, to_date) VALUES (:fromDate , :toDate) ")
-    void setIdeaClosureDate(LocalDate fromDate, LocalDate toDate);
+    @Query("INSERT INTO idea_closure_date (closure_date) VALUES (:closureDate) ")
+    void setIdeaClosureDate(LocalDate closureDate);
 
     @Modifying
     @Query("DELETE FROM idea_closure_date")
     void deleteExistingDates();
 
-    @Query("SELECT TOP 1 from_date FROM idea_closure_date")
-    String getFromDate();
-
-    @Query("SELECT TOP 1 to_date FROM idea_closure_date")
-    String getToDate();
+    @Query("SELECT TOP 1 closure_date FROM idea_closure_date")
+    String getClosureDate();
 }

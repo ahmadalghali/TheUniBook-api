@@ -2,7 +2,6 @@ package com.greenwich.theunibook.controllers;
 
 import com.greenwich.theunibook.dto.IdeaDTO;
 import com.greenwich.theunibook.enums.UserRole;
-import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.services.IdeaService;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -99,12 +97,20 @@ public class IdeaController {
 
     }
 
-    @PostMapping("/ideas/setIdeaClosureDate")
-    public String setIdeaClosureDate(@RequestParam(value="fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-                                     @RequestParam(value="toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
-
-        return ideaService.setIdeaClosureDate(fromDate, toDate);
+    @PostMapping("/ideas/setClosureDate")
+    public String setIdeaClosureDate(@RequestParam String email, @RequestParam String password, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate closureDate) {
+        if (userService.isAuthorized(email, password, UserRole.ADMINISTRATOR)) {
+            return ideaService.setIdeaClosureDate(closureDate);
+        }
+        return "unauthorised access";
     }
+
+//    @PostMapping("/ideas/setIdeaClosureDate")
+////    public String setIdeaClosureDate(@RequestParam(value="fromDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+////                                     @RequestParam(value="toDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+////
+////        return ideaService.setIdeaClosureDate(fromDate, toDate);
+////    }
 
 
 
