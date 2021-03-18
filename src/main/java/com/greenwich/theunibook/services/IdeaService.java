@@ -2,6 +2,7 @@ package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.dto.AnonymousIdeaDTO;
 import com.greenwich.theunibook.dto.IdeaDTO;
+import com.greenwich.theunibook.enums.UserRole;
 import com.greenwich.theunibook.models.Department;
 import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
@@ -138,16 +139,60 @@ public class IdeaService {
     }
 
 
-    public HashMap<String, Object> getIdeas(Integer departmentId, Integer page, Integer loggedInUser, String categoryId, String sortBy) {
+//    public HashMap<String, Object> getIdeas(Integer departmentId, Integer page, Integer loggedInUser, String categoryId, String sortBy) {
+//
+//
+//        HashMap<String, Object> getIdeasResponse = new HashMap<>();
+//        List<Idea> ideas = new ArrayList<>();
+//        //test1
+//
+//        if (categoryId.equals("any")) {
+//            categoryId = "%";
+//        }
+//        ideas = ideaRepository.getIdeas(departmentId, page, sortBy, categoryId);
+//
+//        List<IdeaDTO> ideaDTOS = ideas
+//                .stream()
+//                .map(this::convertToIdeaDTO)
+//                .collect(Collectors.toList());
+//
+//        getIdeasResponse.put("ideas", ideaDTOS);
+//
+//        getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
+//        getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
+//        getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
+//        getIdeasResponse.put("reportedIdeasByUser", reportRepository.getReportedIdeasByUser(loggedInUser));
+//
+//        return getIdeasResponse;
+//
+//    }
 
-
+    public HashMap<String, Object> getIdeas(Integer page, String email, String password, String categoryId, String sortBy) {
         HashMap<String, Object> getIdeasResponse = new HashMap<>();
         List<Idea> ideas = new ArrayList<>();
-        //test1
-
+        String departmentId = "";
         if (categoryId.equals("any")) {
             categoryId = "%";
         }
+        if(userService.isAuthenticated(email, password)){
+            User user = userRepository.findByEmail(email);
+            if(user.getRole() == UserRole.MANAGER){
+                departmentId = "%";
+                getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeas()));
+
+            }
+            else{
+                departmentId = Integer.toString(user.getDepartmentId());
+                getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(Integer.parseInt(departmentId))));
+
+            }
+
+            getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(user.getId()));
+            getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(user.getId()));
+            getIdeasResponse.put("reportedIdeasByUser", reportRepository.getReportedIdeasByUser(user.getId()));
+
+        }
+
         ideas = ideaRepository.getIdeas(departmentId, page, sortBy, categoryId);
 
         List<IdeaDTO> ideaDTOS = ideas
@@ -155,18 +200,8 @@ public class IdeaService {
                 .map(this::convertToIdeaDTO)
                 .collect(Collectors.toList());
 
-//        if (sortBy.equals("most_popular")) {
-//            List<IdeaDTO> mostPopularIdeas = sortMostPopular(ideaDTOS);
-//            getIdeasResponse.put("ideas", mostPopularIdeas);
-//
-//        } else {
-        getIdeasResponse.put("ideas", ideaDTOS);
-//        }
 
-        getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
-        getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
-        getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
-        getIdeasResponse.put("reportedIdeasByUser", reportRepository.getReportedIdeasByUser(loggedInUser));
+        getIdeasResponse.put("ideas", ideaDTOS);
 
         return getIdeasResponse;
 

@@ -56,12 +56,13 @@ public class IdeaController {
     }
 
     @GetMapping("/ideas")
-    public HashMap<String, Object> getIdeas(@RequestParam int departmentId, @RequestParam int page,
+    public HashMap<String, Object> getIdeas(@RequestParam int page,
                                             @RequestParam(required = false) String categoryId,
-                                            @RequestParam(required = false) Integer loggedInUser,
+                                            @RequestParam String email,
+                                            @RequestParam String password,
                                             @RequestParam(required = false) String sortBy) {
 
-        return ideaService.getIdeas(departmentId, page, loggedInUser, categoryId, sortBy);
+        return ideaService.getIdeas(page, email, password, categoryId, sortBy);
     }
 
 

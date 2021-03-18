@@ -38,11 +38,12 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
             "DECLARE @PageNumber AS INT  \n" +
             "DECLARE @RowsOfPage AS INT  \n" +
             "DECLARE @CategoryId AS VARCHAR(MAX) = :categoryId \n" +
+            "DECLARE @DepartmentId AS VARCHAR(MAX) = :departmentId \n" +
             "SET @PageNumber = :page \n" +
             "SET @RowsOfPage = 5  \n" +
             "SELECT i.* FROM ideas i\n" +
             "JOIN users u on i.id_users = u.id_users\n" +
-            "WHERE i.department_id = :departmentId \n" +
+            "WHERE i.department_id like @DepartmentId \n" +
             "AND i.id_category_ideas like @CategoryId \n" +
             "AND u.is_hidden = 0\n" +        // < - -  this line excludes hidden ideas
             "ORDER BY  \n" +
@@ -55,7 +56,7 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
             "END DESC  \n" +
             "OFFSET (@PageNumber-1)*@RowsOfPage ROWS \n" +
             "FETCH NEXT @RowsOfPage ROWS ONLY")
-    List<Idea> getIdeas(int departmentId, int page, String sortBy, String categoryId);
+    List<Idea> getIdeas(String departmentId, int page, String sortBy, String categoryId);
 
     @Query("SELECT id_QA_coordinator FROM department WHERE id_department = :departmentId")
     int getQACoordinatorId(int departmentId);
@@ -65,6 +66,9 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
 
     @Query("SELECT COUNT(id_ideas) FROM ideas WHERE department_id = :departmentId")
     int countIdeasByDepartmentId(int departmentId);
+
+    @Query("SELECT COUNT(id_ideas) FROM ideas")
+    int countIdeas();
 
     @Query("SELECT COUNT(DISTINCT(id_users)) FROM ideas WHERE department_id = :departmentId")
     int getContributorsPerDepartment(int departmentId);
