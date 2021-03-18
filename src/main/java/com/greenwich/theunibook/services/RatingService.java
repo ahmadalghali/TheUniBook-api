@@ -49,6 +49,9 @@ public class RatingService {
 
             }
 
+            updateIdeaScore(ideaId);
+
+
         } catch (Exception e) {
             e.printStackTrace();
             addRatingResponse.put("message", "failed");
@@ -56,6 +59,16 @@ public class RatingService {
 
         return addRatingResponse;
 
+    }
+
+    private void updateIdeaScore(int ideaId) {
+        Idea idea = ideaRepository.findById(ideaId).get();
+
+        int ideaLikes = ratingRepository.getIdeaLikes(idea.getId());
+        int ideaDislikes = ratingRepository.getIdeaDislikes(idea.getId());
+
+        idea.setScore(ideaLikes - ideaDislikes);
+        ideaRepository.save(idea);
     }
 
     public HashMap<String, Object> disLike(int ideaId, int userId) {

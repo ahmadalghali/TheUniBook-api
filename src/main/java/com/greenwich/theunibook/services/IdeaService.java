@@ -99,6 +99,7 @@ public class IdeaService {
                 idea.setStatusId(1);
                 idea.setDepartmentId(ideaAuthor.getDepartmentId());
                 idea.setDate(LocalDateTime.now());
+                idea.setScore(0);
 
                 //Save document if it exists
                 if (idea.getDocument() != null) {
@@ -138,6 +139,8 @@ public class IdeaService {
 
 
     public HashMap<String, Object> getIdeas(Integer departmentId, Integer page, Integer loggedInUser, String categoryId, String sortBy) {
+
+
         HashMap<String, Object> getIdeasResponse = new HashMap<>();
         List<Idea> ideas = new ArrayList<>();
         //test1
@@ -152,13 +155,13 @@ public class IdeaService {
                 .map(this::convertToIdeaDTO)
                 .collect(Collectors.toList());
 
-        if (sortBy.equals("most_popular")) {
-            List<IdeaDTO> mostPopularIdeas = sortMostPopular(ideaDTOS);
-            getIdeasResponse.put("ideas", mostPopularIdeas);
-
-        } else {
-            getIdeasResponse.put("ideas", ideaDTOS);
-        }
+//        if (sortBy.equals("most_popular")) {
+//            List<IdeaDTO> mostPopularIdeas = sortMostPopular(ideaDTOS);
+//            getIdeasResponse.put("ideas", mostPopularIdeas);
+//
+//        } else {
+        getIdeasResponse.put("ideas", ideaDTOS);
+//        }
 
         getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
         getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
@@ -168,6 +171,23 @@ public class IdeaService {
         return getIdeasResponse;
 
     }
+
+
+//    private void updateScores(){
+//
+//        List<Idea> ideas = ideaRepository.getIdeas();
+//
+//
+//        for(Idea idea : ideas){
+//            int ideaLikes = ratingRepository.getIdeaLikes(idea.getId());
+//            int ideaDislikes = ratingRepository.getIdeaDislikes(idea.getId());
+//
+//            idea.setScore(ideaLikes - ideaDislikes);
+//            ideaRepository.save(idea);
+//        }
+//
+//    }
+
 
     private List<IdeaDTO> sortMostPopular(List<IdeaDTO> ideas) {
 
@@ -243,12 +263,12 @@ public class IdeaService {
 
         ideaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));
         ideaDTO.setDislikes(ratingRepository.getIdeaDislikes(idea.getId()));
-
-        int likeCount = ideaDTO.getLikes();
-        int dislikeCount = ideaDTO.getDislikes();
-
-        int score = likeCount - dislikeCount;
-        ideaDTO.setScore(score);
+//
+//        int likeCount = ideaDTO.getLikes();
+//        int dislikeCount = ideaDTO.getDislikes();
+//
+//        int score = likeCount - dislikeCount;
+//        ideaDTO.setScore(score);
 
         ideaDTO.setCommentCount(commentRepository.countByIdeaId(idea.getId()));
 

@@ -21,9 +21,12 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
     @Query("select * from ideas where is_anonymous = 1")
     List<Idea> getAnonymousIdeas();
 
-    @Query("SELECT i.* FROM ideas i\n" +
-            "JOIN users u on i.id_users = u.id_users\n" +
-            "where u.is_hidden = 0")
+//    @Query("SELECT i.* FROM ideas i\n" +
+//            "JOIN users u on i.id_users = u.id_users\n" +
+//            "where u.is_hidden = 0")
+//    List<Idea> getIdeas();
+
+    @Query("SELECT * FROM ideas")
     List<Idea> getIdeas();
 
     @Query("SELECT * FROM ideas WHERE department_id = :departmentId")
@@ -47,7 +50,9 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
             "WHEN @sortColumn = 'latest' THEN i.date \n" +
             "END DESC, \n" +
             "CASE WHEN @sortColumn = 'most_viewed' THEN i.views  \n" +
-            "END DESC \n" +
+            "END DESC, \n" +
+            "CASE WHEN @sortColumn = 'most_popular' THEN i.score  \n" +
+            "END DESC  \n" +
             "OFFSET (@PageNumber-1)*@RowsOfPage ROWS \n" +
             "FETCH NEXT @RowsOfPage ROWS ONLY")
     List<Idea> getIdeas(int departmentId, int page, String sortBy, String categoryId);

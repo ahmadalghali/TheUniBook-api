@@ -46,6 +46,8 @@ public class Idea {
     @JsonIgnore
     private MultipartFile document;
 
+    private int score;
+
 //    @Column("idea_likes")
 //    private int ideaLikes;
 //
@@ -171,8 +173,16 @@ public class Idea {
         this.views = views;
     }
 
+    public int getScore() {
+        return score;
+    }
 
-//    public int getIdeaLikes() {
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+
+    //    public int getIdeaLikes() {
 //        return ideaLikes;
 //    }
 //
