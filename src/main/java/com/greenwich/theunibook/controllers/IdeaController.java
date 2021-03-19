@@ -60,9 +60,15 @@ public class IdeaController {
                                             @RequestParam(required = false) String categoryId,
                                             @RequestParam String email,
                                             @RequestParam String password,
-                                            @RequestParam(required = false) String sortBy) {
+                                            @RequestParam(required = false) String sortBy,
+                                            @RequestParam(required = false) String departmentId) {
 
-        return ideaService.getIdeas(page, email, password, categoryId, sortBy);
+        if (departmentId != null) {
+            return ideaService.getIdeasByDepartment(departmentId, page, email, password, categoryId, sortBy);
+        } else {
+            return ideaService.getIdeas(page, email, password, categoryId, sortBy);
+
+        }
     }
 
 

@@ -18,9 +18,7 @@ public class DepartmentController {
 
     @GetMapping("/departments")
     public List<Department> getDepartments() {
-        List<Department> departments = new ArrayList<>();
-        departmentRepository.findAll().forEach(departments::add);
-        return departments;
+        return departmentRepository.getAll();
     }
 
 

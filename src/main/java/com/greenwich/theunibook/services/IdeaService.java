@@ -26,8 +26,6 @@ import org.supercsv.prefs.CsvPreference;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -111,10 +109,9 @@ public class IdeaService {
                 }
 
 
-
-            ideaAuthor.setScore(ideaAuthor.getScore() + 1);
-            userRepository.save(ideaAuthor);
-            //Email the QA Coordinator of the same department
+                ideaAuthor.setScore(ideaAuthor.getScore() + 1);
+                userRepository.save(ideaAuthor);
+                //Email the QA Coordinator of the same department
                 Idea savedIdea = ideaRepository.save(idea);
 
                 //Email the QA Coordinator of the same department
@@ -132,7 +129,7 @@ public class IdeaService {
                 addIdeaResponse.put("message", "failed");
             }
         } else {
-            addIdeaResponse.put("message","idea submission period closed");
+            addIdeaResponse.put("message", "idea submission period closed");
         }
         return addIdeaResponse;
 
@@ -170,18 +167,21 @@ public class IdeaService {
     public HashMap<String, Object> getIdeas(Integer page, String email, String password, String categoryId, String sortBy) {
         HashMap<String, Object> getIdeasResponse = new HashMap<>();
         List<Idea> ideas = new ArrayList<>();
+
         String departmentId = "";
         if (categoryId.equals("any")) {
             categoryId = "%";
         }
-        if(userService.isAuthenticated(email, password)){
+        if (userService.isAuthenticated(email, password)) {
             User user = userRepository.findByEmail(email);
-            if(user.getRole() == UserRole.MANAGER){
-                departmentId = "%";
-                getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeas()));
+            if (user.getRole() == UserRole.MANAGER) {
+//                departmentId = "%";
+//                getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeas()));
 
-            }
-            else{
+                getIdeasResponse.put("message", "use manager getIdeasByDepartment method");
+                return getIdeasResponse;
+
+            } else {
                 departmentId = Integer.toString(user.getDepartmentId());
                 getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(Integer.parseInt(departmentId))));
 
@@ -202,6 +202,42 @@ public class IdeaService {
 
 
         getIdeasResponse.put("ideas", ideaDTOS);
+
+        return getIdeasResponse;
+
+    }
+
+    public HashMap<String, Object> getIdeasByDepartment(String departmentId, Integer page, String email, String password, String categoryId, String sortBy) {
+        HashMap<String, Object> getIdeasResponse = new HashMap<>();
+        List<Idea> ideas = new ArrayList<>();
+        if (categoryId.equals("any")) {
+            categoryId = "%";
+        }
+        if (userService.isAuthorized(email, password, UserRole.MANAGER)) {
+
+            User user = userRepository.findByEmail(email);
+
+            getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(Integer.parseInt(departmentId))));
+            getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(user.getId()));
+            getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(user.getId()));
+            getIdeasResponse.put("reportedIdeasByUser", reportRepository.getReportedIdeasByUser(user.getId()));
+
+            ideas = ideaRepository.getIdeas(departmentId, page, sortBy, categoryId);
+
+            List<IdeaDTO> ideaDTOS = ideas
+                    .stream()
+                    .map(this::convertToIdeaDTO)
+                    .collect(Collectors.toList());
+
+
+            getIdeasResponse.put("ideas", ideaDTOS);
+
+        } else {
+
+            getIdeasResponse.put("message", "unauthorized access");
+
+        }
+
 
         return getIdeasResponse;
 
