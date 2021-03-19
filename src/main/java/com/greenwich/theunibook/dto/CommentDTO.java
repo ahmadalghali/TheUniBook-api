@@ -4,7 +4,7 @@ public class CommentDTO {
 
     private int id;
 
-    private String commentDescription;
+    private String description;
 
     private int userId;
 
@@ -20,12 +20,12 @@ public class CommentDTO {
         this.id = id;
     }
 
-    public String getCommentDescription() {
-        return commentDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCommentDescription(String commentDescription) {
-        this.commentDescription = commentDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getUserId() {
