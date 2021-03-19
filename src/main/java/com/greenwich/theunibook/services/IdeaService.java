@@ -295,7 +295,6 @@ public class IdeaService {
 
         }
 
-
         ideaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));
         ideaDTO.setDislikes(ratingRepository.getIdeaDislikes(idea.getId()));
 //

@@ -1,5 +1,6 @@
 package com.greenwich.theunibook.controllers;
 
+import com.greenwich.theunibook.dto.CommentDTO;
 import com.greenwich.theunibook.models.Comment;
 import com.greenwich.theunibook.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class CommentController {
     }
 
     @GetMapping("/comments")
-    public List<Comment> getCommentsForIdea(@RequestParam int ideaId) {
+    public List<CommentDTO> getCommentsForIdea(@RequestParam int ideaId) {
         return commentService.getCommentsForIdea(ideaId);
     }
 

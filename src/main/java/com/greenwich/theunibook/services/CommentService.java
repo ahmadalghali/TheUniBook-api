@@ -1,10 +1,15 @@
 package com.greenwich.theunibook.services;
 
+import com.greenwich.theunibook.dto.CommentDTO;
+import com.greenwich.theunibook.dto.IdeaDTO;
 import com.greenwich.theunibook.models.Comment;
+import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.CommentRepository;
 import com.greenwich.theunibook.repository.UserRepository;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,6 +36,9 @@ public class CommentService {
     @Autowired
     private JavaMailSender sender;
 
+    private ModelMapper modelMapper = new ModelMapper();
+
+
 
     public HashMap<String, Object> postComment(Comment comment) {
 
@@ -49,7 +57,7 @@ public class CommentService {
             commentAuthor.setScore(commentAuthor.getScore() + 1);
             userRepository.save(commentAuthor);
 
-            postCommentResponse.put("comment", savedComment);
+            postCommentResponse.put("comment", convertToCommentDTO(savedComment));
             postCommentResponse.put("message", "comment saved");
 
 
@@ -105,13 +113,22 @@ public class CommentService {
     }
 
 
-    public List<Comment> getCommentsForIdea(int ideaId) {
+//    public List<Comment> getCommentsForIdea(int ideaId) {
+//
+//        List<Comment> comments = commentRepository.getAllByIdeaIdOrderByDateDesc(ideaId)
+//                .stream()
+//                .map(this::addAuthorName)
+//                .collect(Collectors.toList());
+//        return comments;
+//    }
 
-        List<Comment> comments = commentRepository.getAllByIdeaIdOrderByDateDesc(ideaId)
-                .stream()
-                .map(this::addAuthorName)
-                .collect(Collectors.toList());
-        return comments;
+    public List<CommentDTO> getCommentsForIdea(int ideaId) {
+
+        List<CommentDTO> commentDTOs = commentRepository.getAllByIdeaIdOrderByDateDesc(ideaId)
+                .stream().map(this::convertToCommentDTO).collect(Collectors.toList());
+
+
+        return commentDTOs;
     }
 
     private Comment addAuthorName(Comment comment) {
@@ -121,5 +138,18 @@ public class CommentService {
         comment.setAuthorName(author.getFirstname() + " " + author.getLastname());
 
         return comment;
+    }
+
+    private CommentDTO convertToCommentDTO(Comment comment) {
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+        User ideaAuthor = (userRepository.findById(comment.getAuthorId())).get();
+        if (comment.isAnonymous()) {
+            commentDTO.setAuthorName("Anonymous");
+        } else {
+            commentDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
+        }
+
+        return commentDTO;
     }
 }
