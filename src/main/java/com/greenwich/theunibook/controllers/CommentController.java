@@ -28,11 +28,9 @@ public class CommentController {
 
     @GetMapping("/comments")
     public List<CommentDTO> getCommentsForIdea(@RequestParam int ideaId) {
-
-
-                for (CommentDTO commentDTO : commentService.getCommentsForIdea(ideaId)) {
-                    System.out.println(commentDTO.getDescription());
-                }
+//                for (CommentDTO commentDTO : commentService.getCommentsForIdea(ideaId)) {
+//                    System.out.println(commentDTO.getDescription());
+//                }
 
         return commentService.getCommentsForIdea(ideaId);
 

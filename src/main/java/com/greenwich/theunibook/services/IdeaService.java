@@ -328,7 +328,6 @@ public class IdeaService {
         } else {
             ideaDTO.setAuthorName(ideaAuthor.getFirstname() + " " + ideaAuthor.getLastname());
             ideaDTO.setAuthorPhoto(ideaAuthor.getProfileImageUrl());
-
         }
 
         ideaDTO.setLikes(ratingRepository.getIdeaLikes(idea.getId()));

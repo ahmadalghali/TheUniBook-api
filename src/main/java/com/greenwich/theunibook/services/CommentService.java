@@ -1,9 +1,7 @@
 package com.greenwich.theunibook.services;
 
 import com.greenwich.theunibook.dto.CommentDTO;
-import com.greenwich.theunibook.dto.IdeaDTO;
 import com.greenwich.theunibook.models.Comment;
-import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.CommentRepository;
 import com.greenwich.theunibook.repository.UserRepository;
@@ -14,15 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.apache.commons.validator.routines.EmailValidator;
 
 
-import javax.mail.*;
-import javax.mail.internet.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Properties;
 
 @Service
 public class CommentService {
@@ -126,7 +120,6 @@ public class CommentService {
 
         List<CommentDTO> commentDTOs = commentRepository.getAllByIdeaIdOrderByDateDesc(ideaId)
                 .stream().map(this::convertToCommentDTO).collect(Collectors.toList());
-
 
         return commentDTOs;
     }

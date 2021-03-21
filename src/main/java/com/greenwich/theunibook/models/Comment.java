@@ -24,7 +24,7 @@ public class Comment {
     private int authorId;
 
     @Column("is_anonymous")
-    private boolean isAnonymous;
+    private boolean anonymous;
 
     @Transient
     private String authorName;
@@ -83,11 +83,11 @@ public class Comment {
     }
 
     public boolean isAnonymous() {
-        return isAnonymous;
+        return anonymous;
     }
 
     public void setAnonymous(boolean anonymous) {
-        isAnonymous = anonymous;
+        this.anonymous = anonymous;
     }
 
     public void setAuthorName(String authorName) {
