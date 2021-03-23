@@ -95,7 +95,6 @@ public class IdeaService {
                     return addIdeaResponse;
                 }
 
-                idea.setStatusId(1);
                 idea.setDepartmentId(ideaAuthor.getDepartmentId());
                 idea.setDate(LocalDateTime.now());
                 idea.setScore(0);
@@ -135,34 +134,6 @@ public class IdeaService {
 
     }
 
-
-//    public HashMap<String, Object> getIdeas(Integer departmentId, Integer page, Integer loggedInUser, String categoryId, String sortBy) {
-//
-//
-//        HashMap<String, Object> getIdeasResponse = new HashMap<>();
-//        List<Idea> ideas = new ArrayList<>();
-//        //test1
-//
-//        if (categoryId.equals("any")) {
-//            categoryId = "%";
-//        }
-//        ideas = ideaRepository.getIdeas(departmentId, page, sortBy, categoryId);
-//
-//        List<IdeaDTO> ideaDTOS = ideas
-//                .stream()
-//                .map(this::convertToIdeaDTO)
-//                .collect(Collectors.toList());
-//
-//        getIdeasResponse.put("ideas", ideaDTOS);
-//
-//        getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(departmentId)));
-//        getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(loggedInUser));
-//        getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(loggedInUser));
-//        getIdeasResponse.put("reportedIdeasByUser", reportRepository.getReportedIdeasByUser(loggedInUser));
-//
-//        return getIdeasResponse;
-//
-//    }
 
     public HashMap<String, Object> getIdeas(Integer page, String email, String password, String categoryId, String sortBy) {
         HashMap<String, Object> getIdeasResponse = new HashMap<>();
@@ -258,16 +229,6 @@ public class IdeaService {
 //        }
 //
 //    }
-
-
-    private List<IdeaDTO> sortMostPopular(List<IdeaDTO> ideas) {
-
-        //Collections.sort(ideas, Comparator.comparingInt(IdeaDTO ::getScore));
-
-        Collections.sort(ideas, (IdeaDTO idea1, IdeaDTO idea2) -> idea1.getScore() - idea2.getScore());
-        Collections.reverse(ideas);
-        return ideas;
-    }
 
 
     public HashMap<String, Object> notifyQACoordinatorByEmail(Idea idea) {

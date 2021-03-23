@@ -20,9 +20,6 @@ public class Idea {
     @Column("id_category_ideas")
     private int categoryId;
 
-    //Column("id_idea_status")
-    @Transient
-    private int statusId;
 
     @Column("is_anonymous")
     private boolean isAnonymous;
@@ -33,8 +30,6 @@ public class Idea {
     private String title;
     @Column("idea_description")
     private String description;
-
-
 
     private int views;
 
@@ -50,12 +45,6 @@ public class Idea {
 
     private int score;
 
-//    @Column("idea_likes")
-//    private int ideaLikes;
-//
-//    @Column("idea_dislikes")
-//    private int ideaDislikes;
-
     protected Idea() {
 
     }
@@ -68,10 +57,10 @@ public class Idea {
         this.documentPath = documentPath;
     }
 
-    public Idea(int userId, int categoryId, int statusId, int departmentId, String title, String description, String documentPath) {
+    public Idea(int userId, int categoryId, int departmentId, String title, String description, String documentPath) {
         this.userId = userId;
         this.categoryId = categoryId;
-        this.statusId = statusId;
+
         this.departmentId = departmentId;
         this.title = title;
         this.description = description;
@@ -100,14 +89,6 @@ public class Idea {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
-    }
-
-    public int getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(int statusId) {
-        this.statusId = statusId;
     }
 
     public int getDepartmentId() {
@@ -184,20 +165,5 @@ public class Idea {
     }
 
 
-    //    public int getIdeaLikes() {
-//        return ideaLikes;
-//    }
-//
-//    public void setIdeaLikes(int ideaLikes) {
-//        this.ideaLikes = ideaLikes;
-//    }
-//
-//    public int getIdeaDislikes() {
-//        return ideaDislikes;
-//    }
-//
-//    public void setIdeaDislikes(int ideaDislikes) {
-//        this.ideaDislikes = ideaDislikes;
-//    }
 
 }
