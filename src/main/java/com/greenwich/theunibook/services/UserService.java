@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -241,6 +240,8 @@ public class UserService {
         } else if (dbUserHashedPassword.equals(hashOldPassword) && matched) {
             userRepository.changePassword(hashNewPassword, user.getId());
             changePasswordResponse.put("message", "Password changed");
+            changePasswordResponse.put("newPassword", hashNewPassword);
+
         } else {
             changePasswordResponse.put("message", "Password not changed");
         }
