@@ -64,8 +64,14 @@ public interface IdeaRepository extends PagingAndSortingRepository<Idea, Integer
     @Query("SELECT idea_title FROM ideas WHERE id_ideas = :id")
     String getIdeaTitle(int id);
 
-    @Query("SELECT COUNT(id_ideas) FROM ideas WHERE department_id = :departmentId")
+//    @Query("SELECT COUNT(id_ideas) FROM ideas WHERE department_id = :departmentId AND is_anonymous = 0")
+//    int countIdeasByDepartmentId(int departmentId);
+
+    @Query("SELECT COUNT(i.id_ideas) FROM ideas i\n" +
+            "    join users u on u.id_users = i.id_users\n" +
+            "    WHERE i.department_id = :departmentId  AND u.is_hidden = 0")
     int countIdeasByDepartmentId(int departmentId);
+
 
     @Query("SELECT COUNT(id_ideas) FROM ideas")
     int countIdeas();

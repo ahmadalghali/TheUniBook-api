@@ -181,11 +181,11 @@ public class IdeaService {
                 getIdeasResponse.put("message", "use manager getIdeasByDepartment method");
                 return getIdeasResponse;
 
-            } else {
-                departmentId = Integer.toString(user.getDepartmentId());
-                getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(Integer.parseInt(departmentId))));
-
             }
+
+            departmentId = Integer.toString(user.getDepartmentId());
+            getIdeasResponse.put("pageCount", calculateNumberOfPagesBasedOnListSize(ideaRepository.countIdeasByDepartmentId(Integer.parseInt(departmentId))));
+
 
             getIdeasResponse.put("likedIdeasByUser", ratingRepository.getLikedIdeasByUser(user.getId()));
             getIdeasResponse.put("dislikedIdeasByUser", ratingRepository.getDislikedIdeasByUser(user.getId()));
