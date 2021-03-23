@@ -19,7 +19,9 @@ public class Idea {
     private int userId;
     @Column("id_category_ideas")
     private int categoryId;
-    @Column("id_idea_status")
+
+    //Column("id_idea_status")
+    @Transient
     private int statusId;
 
     @Column("is_anonymous")
