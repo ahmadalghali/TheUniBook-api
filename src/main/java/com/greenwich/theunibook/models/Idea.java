@@ -37,7 +37,7 @@ public class Idea {
     private String documentPath;
 
     @Column("date")
-    private LocalDateTime date; // = LocalDateTime.now();
+    private LocalDateTime date;
 
     @Transient
     @JsonIgnore
