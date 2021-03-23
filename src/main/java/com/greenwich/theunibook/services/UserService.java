@@ -195,7 +195,7 @@ public class UserService {
             mail.setFrom("theunibook1@gmail.com");
             mail.setTo(user.getEmail());
             mail.setSubject("Reset password");
-            mail.setText("\n\n Hi, " + user.getFirstname() + "\n\nThis is your new password: \n" + generatedPassword + " \nhttps://theunibook.netlify.app\n\n\nThanks,\nTheUniBook Team");
+            mail.setText("\n\n Hi, " + user.getFirstname() + "\n\nThis is your new password: \n" + generatedPassword + " \nhttps://theunibook.co.uk\n\n\nThanks,\nTheUniBook Team");
             this.sender.send(mail);
 
             sendGeneratedPasswordResponse.put("message", "email sent");
@@ -311,7 +311,7 @@ public class UserService {
             SimpleMailMessage mail = new SimpleMailMessage();
             mail.setTo(user.getEmail());
             mail.setSubject("Inactivity");
-            mail.setText("\n\nHello " + user.getFirstname() + ",\n\nYou haven't been engaging recently.\nI hope everything is okay " + " \n\nhttps://theunibook.netlify.app\n\n\nKind regards,\n" + qaCoordinatorName);
+            mail.setText("\n\nHello " + user.getFirstname() + ",\n\nYou haven't been engaging recently.\nI hope everything is okay " + " \n\nhttps://theunibook.co.uk\n\n\nKind regards,\n" + qaCoordinatorName);
             this.sender.send(mail);
 
 
