@@ -1,6 +1,7 @@
 package com.greenwich.theunibook.controllers;
 
 import com.greenwich.theunibook.dto.UserDTO;
+import com.greenwich.theunibook.enums.UserRole;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.UserRepository;
 import com.greenwich.theunibook.services.UserService;
@@ -66,8 +67,14 @@ public class UserController {
     }
 
     @GetMapping("/mostActiveUsers")
-    public List<UserDTO> getMostActiveUsers(){
-        return userService.getMostActiveUsers();
+    public List<UserDTO> getMostActiveUsers(@RequestParam String email, @RequestParam String password) {
+
+        if (userService.isAuthorized(email, password, UserRole.ADMINISTRATOR)) {
+
+            return userService.getMostActiveUsers();
+
+        }
+        return null;
     }
 
     @GetMapping("/users/{userId}")
@@ -76,25 +83,65 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}/disable")
-    public HashMap<String, Object> disableAccount(@PathVariable("userId") int userId) {
-        return userService.disableAccount(userId);
+    public HashMap<String, Object> disableAccount(@RequestParam String email, @RequestParam String password, @PathVariable("userId") int userId) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        if (userService.isAuthorized(email, password, UserRole.MANAGER)) {
+            return userService.disableAccount(userId);
+
+        } else {
+            response.put("message", "user has no authorization for this action");
+            return response;
+        }
+
+
     }
 
 
     @PutMapping("/users/{userId}/enable")
-    public HashMap<String, Object> enableAccount(@PathVariable("userId") int userId) {
-        return userService.enableAccount(userId);
+    public HashMap<String, Object> enableAccount(@RequestParam String email, @RequestParam String password, @PathVariable("userId") int userId) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        if (userService.isAuthorized(email, password, UserRole.MANAGER)) {
+            return userService.enableAccount(userId);
+
+
+        } else {
+            response.put("message", "user has no authorization for this action");
+            return response;
+        }
+
     }
 
 
     @PutMapping("/users/{userId}/disableAndHideActivity")
-    public HashMap<String, Object> disableAccountAndHideActivity(@PathVariable("userId") int userId) {
-        return userService.disableAccountAndHideActivity(userId);
+    public HashMap<String, Object> disableAccountAndHideActivity(@RequestParam String email, @RequestParam String password, @PathVariable("userId") int userId) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        if (userService.isAuthorized(email, password, UserRole.MANAGER)) {
+            return userService.disableAccountAndHideActivity(userId);
+
+        } else {
+            response.put("message", "user has no authorization for this action");
+            return response;
+        }
     }
 
     @PutMapping("/users/{userId}/enableAndUnHideActivity")
-    public HashMap<String, Object> enableAndUnHideActivity(@PathVariable("userId") int userId) {
-        return userService.enableAndUnHideActivity(userId);
+    public HashMap<String, Object> enableAndUnHideActivity(@RequestParam String email, @RequestParam String password, @PathVariable("userId") int userId) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        if (userService.isAuthorized(email, password, UserRole.MANAGER)) {
+            return userService.enableAndUnHideActivity(userId);
+
+        } else {
+            response.put("message", "user has no authorization for this action");
+            return response;
+        }
     }
 
 

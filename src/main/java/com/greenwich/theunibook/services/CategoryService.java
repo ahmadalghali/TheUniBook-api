@@ -28,40 +28,79 @@ public class CategoryService {
         return categoryRepository.getCategories();
     }
 
-    public HashMap<String, Object> deleteCategoryById(int categoryId, int userId) {
+//    public HashMap<String, Object> deleteCategoryById(int categoryId) {
+//
+//
+//        HashMap<String, Object> deleteCategoryResponse = new HashMap<>();
+//
+//        try {
+//            User user = userRepository.findById(userId).get();
+//
+//            //check authorization
+//
+//            if (user.getRole().equals(UserRole.MANAGER)) {
+//
+//                if (!categoryRepository.existsById(categoryId)) {
+//                    deleteCategoryResponse.put("categoryId", categoryId);
+//                    deleteCategoryResponse.put("message", "no category found");
+//                    return deleteCategoryResponse;
+//                }
+//
+//                // check if category has ideas or not
+//
+//                if (categoryRepository.getIdeaCountForCategory(categoryId) == 0) {
+//                    categoryRepository.deleteById(categoryId);
+//
+//                    deleteCategoryResponse.put("categoryId", categoryId);
+//                    deleteCategoryResponse.put("deleted-by", user.getFirstname() + " " + user.getLastname());
+//                    deleteCategoryResponse.put("message", "category deleted successfully");
+//                } else {
+//                    deleteCategoryResponse.put("categoryId", categoryId);
+//                    deleteCategoryResponse.put("message", "category cannot be deleted, ideas exist for this category");
+//                }
+//            } else {
+//                deleteCategoryResponse.put("categoryId", categoryId);
+//                deleteCategoryResponse.put("message", "user has no authorization for this action");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//
+//            deleteCategoryResponse.put("categoryId", categoryId);
+//            deleteCategoryResponse.put("message", "failed to delete category, something went wrong");
+//            deleteCategoryResponse.put("Error", e.getLocalizedMessage());
+//
+//        }
+//
+//        return deleteCategoryResponse;
+//    }
+
+
+    public HashMap<String, Object> deleteCategoryById(int categoryId) {
 
 
         HashMap<String, Object> deleteCategoryResponse = new HashMap<>();
 
         try {
-            User user = userRepository.findById(userId).get();
 
-            //check authorization
 
-            if (user.getRole().equals(UserRole.MANAGER)) {
+            if (!categoryRepository.existsById(categoryId)) {
+                deleteCategoryResponse.put("categoryId", categoryId);
+                deleteCategoryResponse.put("message", "no category found");
+                return deleteCategoryResponse;
+            }
 
-                if (!categoryRepository.existsById(categoryId)) {
-                    deleteCategoryResponse.put("categoryId", categoryId);
-                    deleteCategoryResponse.put("message", "no category found");
-                    return deleteCategoryResponse;
-                }
+            // check if category has ideas or not
 
-                // check if category has ideas or not
+            if (categoryRepository.getIdeaCountForCategory(categoryId) == 0) {
+                categoryRepository.deleteById(categoryId);
 
-                if (categoryRepository.getIdeaCountForCategory(categoryId) == 0) {
-                    categoryRepository.deleteById(categoryId);
-
-                    deleteCategoryResponse.put("categoryId", categoryId);
-                    deleteCategoryResponse.put("deleted-by", user.getFirstname() + " " + user.getLastname());
-                    deleteCategoryResponse.put("message", "category deleted successfully");
-                } else {
-                    deleteCategoryResponse.put("categoryId", categoryId);
-                    deleteCategoryResponse.put("message", "category cannot be deleted, ideas exist for this category");
-                }
+                deleteCategoryResponse.put("categoryId", categoryId);
+                deleteCategoryResponse.put("message", "category deleted successfully");
             } else {
                 deleteCategoryResponse.put("categoryId", categoryId);
-                deleteCategoryResponse.put("message", "user has no authorization for this action");
+                deleteCategoryResponse.put("message", "category cannot be deleted, ideas exist for this category");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
 

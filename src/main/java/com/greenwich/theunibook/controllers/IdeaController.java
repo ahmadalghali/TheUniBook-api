@@ -85,22 +85,47 @@ public class IdeaController {
 
 
     @GetMapping("/ideas/statistics")
-    public HashMap<String, Object> getStatistics() {
-        return ideaService.getStatistics();
+    public HashMap<String, Object> getStatistics(@RequestParam String email, @RequestParam String password) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        if (userService.isAuthorized(email, password, UserRole.MANAGER)) {
+
+            return ideaService.getStatistics();
+
+        } else {
+            response.put("message", "User has no access to this data");
+            response.put("authorized", false);
+        }
+
+        return response;
+
+
     }
 
 
-
-
     @GetMapping("/ideas/downloadAllIdeas")
-    public void downloadAllIdeasCSV(HttpServletResponse response) throws IOException {
-        ideaService.downloadAllIdeasCSV(response);
+    public void downloadAllIdeasCSV(@RequestParam String email, @RequestParam String password, HttpServletResponse response) throws IOException {
+
+
+        if (userService.isAuthorized(email, password, UserRole.MANAGER)) {
+
+            ideaService.downloadAllIdeasCSV(response);
+
+        }
+
 
     }
 
     @GetMapping(value = "/ideas/downloadAllDocuments")
-    public void zipFiles(HttpServletResponse response) throws IOException {
-        ideaService.downloadAllDocuments(response);
+    public void zipFiles(@RequestParam String email, @RequestParam String password, HttpServletResponse response) throws IOException {
+
+        if (userService.isAuthorized(email, password, UserRole.MANAGER)) {
+
+            ideaService.downloadAllDocuments(response);
+
+
+        }
 
     }
 
