@@ -432,8 +432,8 @@ public class IdeaService {
         List<Idea> ideasList = ideaRepository.getIdeas();
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
-        String[] csvHeader = {"idea ID", "Idea Title", "Idea Description", "Date", "Author ID", "Category ID", "Idea Status ID", "Department ID", "Anonymity", "Idea Document Path", "Number of Views"};
-        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "statusId", "departmentId", "anonymous", "documentPath", "views"};
+        String[] csvHeader = {"idea ID", "Idea Title", "Idea Description", "Date", "Author ID", "Category ID", "Department ID", "Anonymity", "Idea Document Path", "Number of Views"};
+        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "departmentId", "anonymous", "documentPath", "views"};
 
         csvWriter.writeHeader(csvHeader);
 
