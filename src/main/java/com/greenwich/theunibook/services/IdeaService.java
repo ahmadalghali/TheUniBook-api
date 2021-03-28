@@ -8,6 +8,7 @@ import com.greenwich.theunibook.models.Idea;
 import com.greenwich.theunibook.models.User;
 import com.greenwich.theunibook.repository.*;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.tika.Tika;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -101,10 +102,14 @@ public class IdeaService {
 
                 //Save document if it exists
                 if (idea.getDocument() != null) {
-                    String documentPath = uploadFile(idea.getDocument());
-                    if (documentPath != null) {
-                        idea.setDocumentPath(documentPath);
+                    boolean isValidType = checkFileType(idea.getDocument());
+                    if (isValidType) {
+                        String filePath = createFilePath(idea.getDocument());
+                            idea.setFilePath(filePath);
+                    } else {
+                        idea.setDocument(null);
                     }
+
                 }
 
 
@@ -133,6 +138,8 @@ public class IdeaService {
         return addIdeaResponse;
 
     }
+
+
 
 
     public HashMap<String, Object> getIdeas(Integer page, String email, String password, String categoryId, String sortBy) {
@@ -335,26 +342,37 @@ public class IdeaService {
         return numberOfPages;
     }
 
-    public String uploadFile(MultipartFile file) {
-
-        String destinationFilename = "./uploads/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
-
+    private boolean checkFileType(MultipartFile file) {
         try {
-            Path path = Paths.get(destinationFilename);
-            Files.copy(file.getInputStream(),
-                    path,
-                    StandardCopyOption.REPLACE_EXISTING);
+            Tika tika = new Tika();
 
-            return destinationFilename;
+                String detectedType = tika.detect(file.getBytes());
+                //allow only these file types: image/*,.pdf,.doc,.docx
+                if (detectedType.startsWith("Image/") || detectedType.equals("application/x-tika-msoffice") || detectedType.equals("application/pdf") || detectedType.equals("application/x-tika-ooxml")) {
+                    return true;
+                }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
 
-            return null;
         }
-
-
+        return false;
     }
 
+    public String createFilePath(MultipartFile file) {
+
+        String destinationFilename = "./uploads/" + UUID.randomUUID() + "-" + file.getOriginalFilename();
+        try {
+
+                Path path = Paths.get(destinationFilename);
+                Files.copy(file.getInputStream(),
+                        path,
+                        StandardCopyOption.REPLACE_EXISTING);
+                return destinationFilename;
+            } catch (IOException e) {
+
+            return e.getMessage();
+        }
+    }
     public ResponseEntity<Object> downloadFile(String documentPath) throws FileNotFoundException {
 
 

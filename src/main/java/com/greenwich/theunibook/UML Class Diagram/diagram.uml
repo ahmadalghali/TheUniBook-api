@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="629.360119047619" y="556.5">com.greenwich.theunibook.services.UserService</node>
+    <node x="545.4285714285714" y="0.0">com.greenwich.theunibook.models.User</node>
+    <node x="758.360119047619" y="859.0">com.greenwich.theunibook.controllers.UserController</node>
+    <node x="430.3601190476191" y="826.0">com.greenwich.theunibook.services.IdeaService</node>
+    <node x="0.0" y="77.0">com.greenwich.theunibook.models.Comment</node>
+    <node x="111.3601190476191" y="579.5">com.greenwich.theunibook.services.CommentService</node>
+    <node x="46.46130952380952" y="871.0">com.greenwich.theunibook.controllers.CommentController</node>
+    <node x="289.3601190476191" y="413.0">com.greenwich.theunibook.models.Idea</node>
+    <node x="519.0" y="996.0">com.greenwich.theunibook.controllers.IdeaController</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.greenwich.theunibook.controllers.IdeaController" target="com.greenwich.theunibook.services.IdeaService">
+      <point x="0.0" y="-27.0" />
+      <point x="598.0" y="971.0" />
+      <point x="583.860119047619" y="971.0" />
+      <point x="0.0" y="60.0" />
+    </edge>
+    <edge source="com.greenwich.theunibook.controllers.IdeaController" target="com.greenwich.theunibook.services.UserService">
+      <point x="52.66666666666663" y="-27.0" />
+      <point x="650.6666666666666" y="971.0" />
+      <point x="747.860119047619" y="971.0" />
+      <point x="0.0" y="38.0" />
+    </edge>
+    <edge source="com.greenwich.theunibook.controllers.UserController" target="com.greenwich.theunibook.services.UserService">
+      <point x="-45.5" y="-27.0" />
+      <point x="803.860119047619" y="801.0" />
+      <point x="826.860119047619" y="801.0" />
+      <point x="79.0" y="38.0" />
+    </edge>
+    <edge source="com.greenwich.theunibook.services.UserService" target="com.greenwich.theunibook.models.User">
+      <point x="-59.25" y="-38.0" />
+      <point x="0.0" y="181.5" />
+    </edge>
+    <edge source="com.greenwich.theunibook.controllers.IdeaController" target="com.greenwich.theunibook.models.Idea">
+      <point x="-52.66666666666663" y="-27.0" />
+      <point x="545.3333333333334" y="971.0" />
+      <point x="360.3601190476191" y="971.0" />
+      <point x="-71.0" y="181.5" />
+    </edge>
+    <edge source="com.greenwich.theunibook.services.CommentService" target="com.greenwich.theunibook.models.Comment">
+      <point x="-39.5" y="-15.0" />
+      <point x="150.8601190476191" y="393.0" />
+      <point x="154.5" y="393.0" />
+      <point x="51.5" y="104.5" />
+    </edge>
+    <edge source="com.greenwich.theunibook.services.IdeaService" target="com.greenwich.theunibook.models.User">
+      <point x="0.0" y="-60.0" />
+      <point x="583.860119047619" y="393.0" />
+      <point x="630.9285714285714" y="393.0" />
+      <point x="-57.0" y="181.5" />
+    </edge>
+    <edge source="com.greenwich.theunibook.services.CommentService" target="com.greenwich.theunibook.models.User">
+      <point x="39.5" y="-15.0" />
+      <point x="229.8601190476191" y="393.0" />
+      <point x="573.9285714285714" y="393.0" />
+      <point x="-114.0" y="181.5" />
+    </edge>
+    <edge source="com.greenwich.theunibook.controllers.CommentController" target="com.greenwich.theunibook.models.Comment">
+      <point x="-45.25" y="-15.0" />
+      <point x="92.71130952380952" y="393.0" />
+      <point x="51.5" y="393.0" />
+      <point x="-51.5" y="104.5" />
+    </edge>
+    <edge source="com.greenwich.theunibook.services.IdeaService" target="com.greenwich.theunibook.models.Idea">
+      <point x="-102.33333333333331" y="-60.0" />
+      <point x="481.5267857142858" y="801.0" />
+      <point x="502.3601190476191" y="801.0" />
+      <point x="71.0" y="181.5" />
+    </edge>
+    <edge source="com.greenwich.theunibook.controllers.CommentController" target="com.greenwich.theunibook.services.CommentService">
+      <point x="45.25" y="-15.0" />
+      <point x="182.21130952380952" y="801.0" />
+      <point x="190.3601190476191" y="801.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="com.greenwich.theunibook.services.IdeaService" target="com.greenwich.theunibook.services.UserService">
+      <point x="102.33333333333337" y="-60.0" />
+      <point x="686.1934523809525" y="801.0" />
+      <point x="668.860119047619" y="801.0" />
+      <point x="-79.0" y="38.0" />
+    </edge>
+    <edge source="com.greenwich.theunibook.controllers.UserController" target="com.greenwich.theunibook.models.User">
+      <point x="45.5" y="-27.0" />
+      <point x="894.860119047619" y="383.0" />
+      <point x="801.9285714285714" y="383.0" />
+      <point x="113.99999999999997" y="181.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="1087.0" y="458.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Properties</Category>
+    <Category>Constructors</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

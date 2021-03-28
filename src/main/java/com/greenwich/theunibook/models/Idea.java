@@ -119,7 +119,7 @@ public class Idea {
         return documentPath;
     }
 
-    public void setDocumentPath(String documentPath) {
+    public void setFilePath(String documentPath) {
         this.documentPath = documentPath;
     }
 
