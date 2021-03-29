@@ -25,7 +25,7 @@ public class AnonymousIdeaDTO {
 
     private LocalDateTime date;
 
-    private String documentPath;
+    private String filePath;
 
     private String authorPhoto;
 
@@ -112,12 +112,12 @@ public class AnonymousIdeaDTO {
         this.email = email;
     }
 
-    public String getDocumentPath() {
-        return documentPath;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setDocumentPath(String documentPath) {
-        this.documentPath = documentPath;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public String getAuthorPhoto() {

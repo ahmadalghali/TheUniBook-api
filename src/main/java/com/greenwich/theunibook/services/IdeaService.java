@@ -109,7 +109,6 @@ public class IdeaService {
                     } else {
                         idea.setDocument(null);
                     }
-
                 }
 
 
@@ -452,7 +451,7 @@ public class IdeaService {
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
         String[] csvHeader = {"idea ID", "Idea Title", "Idea Description", "Date", "Author ID", "Category ID", "Department ID", "Anonymity", "Idea Document Path", "Number of Views"};
-        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "departmentId", "anonymous", "documentPath", "views"};
+        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "departmentId", "anonymous", "filePath", "views"};
 
         csvWriter.writeHeader(csvHeader);
 

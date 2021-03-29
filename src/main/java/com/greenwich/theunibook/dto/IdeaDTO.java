@@ -17,7 +17,7 @@ public class IdeaDTO {
 
     private int userId;
 
-    private String documentPath;
+    private String filePath;
 
     private Boolean isAnonymous;
 
@@ -75,12 +75,12 @@ public class IdeaDTO {
         this.description = description;
     }
 
-    public String getDocumentPath() {
-        return documentPath;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setDocumentPath(String documentPath) {
-        this.documentPath = documentPath;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public String getAuthorName() {
