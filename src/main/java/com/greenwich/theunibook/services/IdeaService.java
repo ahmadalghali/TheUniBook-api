@@ -245,6 +245,7 @@ public class IdeaService {
         try {
 
 
+
             int QACoordinatorId = ideaRepository.getQACoordinatorId(idea.getDepartmentId());
 
             //Check if the commenter is the same author of the idea so you don't send an email to them

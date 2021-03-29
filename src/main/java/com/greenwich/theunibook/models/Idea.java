@@ -8,7 +8,6 @@ import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Table("ideas")
 public class Idea {
@@ -34,7 +33,7 @@ public class Idea {
     private int views;
 
     @Column("idea_document_path")
-    private String documentPath;
+    private String filePath;
 
     @Column("date")
     private LocalDateTime date;
@@ -49,22 +48,22 @@ public class Idea {
 
     }
 
-    public Idea(int userId, int categoryId, String title, String description, String documentPath) {
+    public Idea(int userId, int categoryId, String title, String description, String filePath) {
         this.userId = userId;
         this.categoryId = categoryId;
         this.title = title;
         this.description = description;
-        this.documentPath = documentPath;
+        this.filePath = filePath;
     }
 
-    public Idea(int userId, int categoryId, int departmentId, String title, String description, String documentPath) {
+    public Idea(int userId, int categoryId, int departmentId, String title, String description, String filePath) {
         this.userId = userId;
         this.categoryId = categoryId;
 
         this.departmentId = departmentId;
         this.title = title;
         this.description = description;
-        this.documentPath = documentPath;
+        this.filePath = filePath;
     }
 
     public int getId() {
@@ -115,12 +114,12 @@ public class Idea {
         this.description = description;
     }
 
-    public String getDocumentPath() {
-        return documentPath;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setFilePath(String documentPath) {
-        this.documentPath = documentPath;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
 
