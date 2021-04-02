@@ -33,7 +33,7 @@ public class Idea {
     private int views;
 
     @Column("idea_document_path")
-    private String filePath;
+    private String documentPath;
 
     @Column("date")
     private LocalDateTime date;
@@ -48,22 +48,22 @@ public class Idea {
 
     }
 
-    public Idea(int userId, int categoryId, String title, String description, String filePath) {
+    public Idea(int userId, int categoryId, String title, String description, String documentPath) {
         this.userId = userId;
         this.categoryId = categoryId;
         this.title = title;
         this.description = description;
-        this.filePath = filePath;
+        this.documentPath = documentPath;
     }
 
-    public Idea(int userId, int categoryId, int departmentId, String title, String description, String filePath) {
+    public Idea(int userId, int categoryId, int departmentId, String title, String description, String documentPath) {
         this.userId = userId;
         this.categoryId = categoryId;
 
         this.departmentId = departmentId;
         this.title = title;
         this.description = description;
-        this.filePath = filePath;
+        this.documentPath = documentPath;
     }
 
     public int getId() {
@@ -114,12 +114,12 @@ public class Idea {
         this.description = description;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getDocumentPath() {
+        return documentPath;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setDocumentPath(String documentPath) {
+        this.documentPath = documentPath;
     }
 
 

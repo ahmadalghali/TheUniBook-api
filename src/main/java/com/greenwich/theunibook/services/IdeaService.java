@@ -105,7 +105,7 @@ public class IdeaService {
                     boolean isValidType = checkFileType(idea.getDocument());
                     if (isValidType) {
                         String filePath = createFilePath(idea.getDocument());
-                            idea.setFilePath(filePath);
+                            idea.setDocumentPath(filePath);
                     } else {
                         idea.setDocument(null);
                     }
@@ -451,7 +451,7 @@ public class IdeaService {
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
         String[] csvHeader = {"idea ID", "Idea Title", "Idea Description", "Date", "Author ID", "Category ID", "Department ID", "Anonymity", "Idea Document Path", "Number of Views"};
-        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "departmentId", "anonymous", "filePath", "views"};
+        String[] nameMapping = {"id", "title", "description", "date", "userId", "categoryId", "departmentId", "anonymous", "documentPath", "views"};
 
         csvWriter.writeHeader(csvHeader);
 
