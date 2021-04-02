@@ -347,8 +347,9 @@ public class IdeaService {
             Tika tika = new Tika();
 
                 String detectedType = tika.detect(file.getBytes());
+                System.out.println(detectedType);
                 //allow only these file types: image/*,.pdf,.doc,.docx
-                if (detectedType.startsWith("Image/") || detectedType.equals("application/x-tika-msoffice") || detectedType.equals("application/pdf") || detectedType.equals("application/x-tika-ooxml")) {
+                if (detectedType.startsWith("image/") || detectedType.equals("application/x-tika-msoffice") || detectedType.equals("application/pdf") || detectedType.equals("application/x-tika-ooxml")) {
                     return true;
                 }
 
